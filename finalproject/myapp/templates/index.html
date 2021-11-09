@@ -1,11 +1,36 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>{{ title }}</title>
-  </head>
+{% extends "base.html" %}
+{% load static %}
 
-  <body>
-    <p>{{ body }}</p>
-  </body>
-
-</html>
+{% block title %}{{ title }}{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/app2.css' %}">
+{% endblock %}
+{% block content %}
+<div id="list-rendering">
+    <div class="grid-container">
+        <div class="grid-x grid-padding-x">
+            <div class="large-12 medium-12 small-12 cell">
+                {% if request.user.is_authenticated %}
+                <h3>
+                  <center>Choose a commuity</center>
+                </h3>
+                <ul>
+                  {% for c in community_list %}
+                    <li><a href="'community/'+c.community_id+'/''">{{ c }}</a></li>
+                  {% endfor %}
+                </ul>
+                {% else %}
+                <h3>
+                  <center>Please Login into to view your Communities</center>
+                </h3>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://unpkg.com/vue@next"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="{% static 'js/vue.js' %}"></script>
+{% endblock %}
