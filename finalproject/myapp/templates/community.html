@@ -10,12 +10,16 @@
     <div class="grid-container">
         <div class="grid-x grid-padding-x">
           <div class="large-12 medium-1 small-12 cell">
-            <center>{{ name }}</center>
+            <center>{{ community_id }}</center>
             <div class="large-12 medium-12 small-12 cell" v-for="sugg in suggestions">
+
+                comm={{ sugg.community }}
+                id={{ community_id }}
+
                 {% verbatim %}
                 <div class="card-info">
                     <div class="card-info-content">
-                        <h3 class="lead">{{ sugg.suggestion }}</h3>
+                        <h3 class="lead">{{ sugg.community }} - {{ sugg.suggestion }}</h3>
                         <img v-bind:src="sugg.image" v:alt="sugg.image_desc" />
                         <br>
                         {{ sugg.author }} - {{ sugg.date }}
@@ -38,7 +42,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>

@@ -11,23 +11,17 @@ from . import forms
 # Create your views here.
 def index(request):
     if request.method == "POST":
-        form = forms.SuggestionForm(request.POST)
-        if form.is_valid() and request.user.is_authenticated:
-            form.save(request)
-            form = forms.SuggestionForm()
-    else:
-        form = forms.SuggestionForm()
+        redirect("/")
 
     community_objects = models.CommunityModel.objects.all()
     community_list = []
-    for community in community_objects:
-        community_list += [community.name]
+    for c in community_objects:
+        community_list += [c.community]
 
     context = {
         "title": "Final Project",
         "body":"Hello World",
-        "community_list": community_list,
-       "form": form
+        "community_list": community_list
     }
     return render(request,"index.html", context=context)
 
@@ -63,28 +57,9 @@ def register_view(request):
     }
     return render(request,"registration/register.html", context=context)
 
-@login_required
-def comment_view(request, sugg_id):
-    if request.method == "POST":
-        form = forms.CommentForm(request.POST)
-        if form.is_valid() and request.user.is_authenticated:
-            form.save(request, sugg_id)
-            return redirect("/")
-    else:
-        form = forms.CommentForm()
-
-    context = {
-        "title": "Comment",
-        "sugg_id": sugg_id,
-       "form": form
-    }
-    return render(request,"comment.html", context=context)
-
 def community_view(request, community_id):
     if request.method == "POST":
         return redirect("/")
-
-    suggestion_objects = models.SuggestionModel.objects.all().order_by("-published_on")
 
     context = {
         "name": "CURRENT COMMUNITY NAME - FIX THIS",
@@ -92,33 +67,53 @@ def community_view(request, community_id):
     }
     return render(request,"community.html", context=context)
 
-def suggestion_view(request):
+def suggestion_view(request, community_id):
     if not request.user.is_authenticated:
         return redirect("/login/")
     if request.method == "POST":
         form = forms.SuggestionForm(request.POST, request.FILES)
         if form.is_valid() and request.user.is_authenticated:
-            form.save(request)
-            return redirect("/")
+            form.save(request, community_id)
+            return redirect("/community/{{ community_id }}/")
     else:
         form = forms.SuggestionForm()
 
     context = {
         "title": "Add Suggestion",
+        "community_id": community_id,
        "form": form
     }
     return render(request,"suggestion.html", context=context)
 
+@login_required
+def comment_view(request, community_id, sugg_id):
+    if request.method == "POST":
+        form = forms.CommentForm(request.POST)
+        if form.is_valid() and request.user.is_authenticated:
+            form.save(request, community_id, sugg_id)
+            return redirect("/")
+    else:
+        form = forms.CommentForm()
+
+    context = {
+        "title": "Comment",
+        "community_id": community_id,
+        "sugg_id": sugg_id,
+       "form": form
+    }
+    return render(request,"comment.html", context=context)
+
 def suggestions_view(request):
+
     suggestion_objects = models.SuggestionModel.objects.all().order_by("-published_on")
     suggestion_list = {}
     suggestion_list["suggestions"] = []
     for sugg in suggestion_objects:
-        comment_objects = models.CommentModel.objects.filter(
-            suggestion=sugg
-            )
+        comment_objects = models.CommentModel.objects.filter(suggestion=sugg)
         temp_sugg = {}
         temp_sugg["suggestion"] = sugg.suggestion
+        #community_object = models.CommunityModel.object.filter()
+        temp_sugg["community"] = sugg.community.community
         temp_sugg["id"] = sugg.id
         temp_sugg["author"] = sugg.author.username
         temp_sugg["date"] = sugg.published_on.strftime("%Y-%m-%d")

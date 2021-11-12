@@ -10,8 +10,8 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view()),
     path('register/', views.register_view),
     path('logout/', views.logout_view),
+    path('community/<str:community_id>/', views.community_view),
+    path('community/<str:community_id>/suggestion/', views.suggestion_view),
     path('suggestions/', views.suggestions_view),
-    path('suggestion/', views.suggestion_view),
-    path('comment/<int:sugg_id>/', views.comment_view),
-    path('community/<int:community_id>/', views.community_view),
+    path('community/<str:community_id>/comment/<int:sugg_id>/', views.comment_view),
 ]

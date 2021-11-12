@@ -28,12 +28,14 @@ class SuggestionForm(forms.Form):
         required=False
     )
 
-    def save(self, request):
+    def save(self, request, community_id):
+        community_instance = models.CommunityModel.objects.get(community=community_id)
         suggestion_instance = models.SuggestionModel()
         suggestion_instance.suggestion = self.cleaned_data["suggestion_field"]
         suggestion_instance.image = self.cleaned_data["image"]
         suggestion_instance.image_description = self.cleaned_data["image_description"]
         suggestion_instance.author = request.user
+        suggestion_instance.community = community_instance
         suggestion_instance.save()
         return
 
@@ -44,12 +46,14 @@ class CommentForm(forms.Form):
         # validators=[validate_unicode_slug, must_be_caps, must_be_bob]
         )
 
-    def save(self, request, sugg_id):
+    def save(self, request, community_id, sugg_id):
+        community_instance = models.CommunityModel.objects.get(community=community_id)
         suggestion_instance = models.SuggestionModel.objects.get(id=sugg_id)
         comment_instance = models.CommentModel()
         comment_instance.comment = self.cleaned_data["comment_field"]
         comment_instance.author = request.user
         comment_instance.suggestion = suggestion_instance
+        comment_instance.community = community_instance
         comment_instance.save()
         return comment_instance
 

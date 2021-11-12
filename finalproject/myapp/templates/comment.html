@@ -6,7 +6,7 @@
   <!-- <div class="large-4 medium-4 small-12 cell"></div> -->
   <div class="large-4 medium-4 small-12 large-offset-4 medium-offset-4 cell">
     <h3 class="text-center">Comment</h3>
-    <form action="/comment/{{ sugg_id }}/" method="post">
+    <form action="community/{{ community }}/" method="post">
         {% csrf_token %}
 
         {{ form }}
