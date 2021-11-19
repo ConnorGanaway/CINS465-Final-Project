@@ -14,4 +14,5 @@ urlpatterns = [
     path('community/<str:community_id>/suggestion/', views.suggestion_view),
     path('suggestions/', views.suggestions_view),
     path('community/<str:community_id>/comment/<int:sugg_id>/', views.comment_view),
+    path('cur_community/<str:community_id>/', views.cur_community_view),
 ]

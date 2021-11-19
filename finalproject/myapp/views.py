@@ -61,11 +61,64 @@ def community_view(request, community_id):
     if request.method == "POST":
         return redirect("/")
 
+    #print(">>>>>>>>>>>>>>=" + community_id + "=<<<<<<<<<<<<<<<<<<")
+    #cur_community = models.CommunityModel.objects.get(community=community_id)
+    #suggestion_objects = models.SuggestionModel.objects.filter(community=cur_community)
+
     context = {
         "name": "CURRENT COMMUNITY NAME - FIX THIS",
         "community_id": community_id
     }
     return render(request,"community.html", context=context)
+
+
+def cur_community_view(request, community_id):
+
+    cur_community = models.CommunityModel.objects.get(community=community_id)
+    suggestion_objects = models.SuggestionModel.objects.filter(community=cur_community).order_by("-published_on")
+    suggestion_list = {}
+    suggestion_list["suggestions"] = []
+    for sugg in suggestion_objects:
+        comment_objects = models.CommentModel.objects.filter(suggestion=sugg)
+        temp_sugg = {}
+        temp_sugg["suggestion"] = sugg.suggestion
+        #community_object = models.CommunityModel.object.filter()
+        temp_sugg["community"] = sugg.community.community
+        temp_sugg["id"] = sugg.id
+        temp_sugg["author"] = sugg.author.username
+        temp_sugg["date"] = sugg.published_on.strftime("%Y-%m-%d")
+        if sugg.image:
+            temp_sugg["image"] = sugg.image.url
+            temp_sugg["image_desc"] = sugg.image_description
+        else:
+            temp_sugg["image"] = ""
+            temp_sugg["image_desc"] = ""
+        temp_sugg["comments"] = []
+        for comm in comment_objects:
+            temp_comm = {}
+            temp_comm["comment"] = comm.comment
+            temp_comm["id"] = comm.id
+            temp_comm["author"] = comm.author.username
+            time_diff = datetime.now(timezone.utc) - comm.published_on
+            time_diff_s = time_diff.total_seconds()
+            if time_diff_s < 60:
+                temp_comm["date"] = "published " + str(int(time_diff_s)) + " seconds ago"
+            else:
+                time_diff_m = divmod(time_diff_s,60)[0]
+                if time_diff_m < 60:
+                    temp_comm["date"] = "published " + str(int(time_diff_m)) + " minutes ago"
+                else:
+                    time_diff_h = divmod(time_diff_m,60)[0]
+                    if time_diff_h < 24:
+                        temp_comm["date"] = "published " + str(int(time_diff_h)) + " hours ago"
+                    else:
+                        temp_comm["date"] = comm.published_on.strftime("%Y-%m-%d %H:%M:%S")
+            temp_sugg["comments"] += [temp_comm]
+        suggestion_list["suggestions"] += [temp_sugg]
+
+    redirect("/login/")
+
+    return JsonResponse(suggestion_list)
 
 def suggestion_view(request, community_id):
     if not request.user.is_authenticated:
