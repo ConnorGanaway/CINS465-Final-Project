@@ -5,3 +5,7 @@
     from the cur_community json page.
   - How do I edit it so it uses a link with a <std:community_id> which
     changes in the link
+
+- Community Form is not saving
+  - Its identical to the suggestion and comment, form
+  - I'll be done when I'm able to view the clickable link on the homepage

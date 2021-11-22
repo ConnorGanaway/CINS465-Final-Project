@@ -11,6 +11,18 @@ def must_be_unique(value):
     # Always return the cleaned data
     return value
 
+class CommunityForm(forms.Form):
+    community_field = forms.CharField(
+        label='Community',
+        max_length=120,
+        )
+
+    def save(self, request):
+        community_instance = models.CommunityModel()
+        community_instance.community = self.cleaned_data["community_field"]
+        community_instance.save()
+        return community_instance
+
 
 class SuggestionForm(forms.Form):
     suggestion_field = forms.CharField(
@@ -37,7 +49,7 @@ class SuggestionForm(forms.Form):
         suggestion_instance.author = request.user
         suggestion_instance.community = community_instance
         suggestion_instance.save()
-        return
+        return suggestion_instance
 
 class CommentForm(forms.Form):
     comment_field = forms.CharField(

@@ -61,10 +61,6 @@ def community_view(request, community_id):
     if request.method == "POST":
         return redirect("/")
 
-    #print(">>>>>>>>>>>>>>=" + community_id + "=<<<<<<<<<<<<<<<<<<")
-    #cur_community = models.CommunityModel.objects.get(community=community_id)
-    #suggestion_objects = models.SuggestionModel.objects.filter(community=cur_community)
-
     context = {
         "name": "CURRENT COMMUNITY NAME - FIX THIS",
         "community_id": community_id
@@ -144,7 +140,7 @@ def comment_view(request, community_id, sugg_id):
         form = forms.CommentForm(request.POST)
         if form.is_valid() and request.user.is_authenticated:
             form.save(request, community_id, sugg_id)
-            return redirect("/")
+            return redirect("/community/{{ community_id }}/")
     else:
         form = forms.CommentForm()
 
@@ -155,6 +151,24 @@ def comment_view(request, community_id, sugg_id):
        "form": form
     }
     return render(request,"comment.html", context=context)
+
+@login_required
+def create_community_view(request):
+    if request.method == "POST":
+        form = forms.CommunityForm(request.POST)
+        if form.is_valid() and request.user.is_authenticated:
+            form.save(request)
+            return redirect("/")
+    else:
+        form = forms.CommunityForm()
+
+    print("FORM CREATED")
+
+    context = {
+        "title": "Create Communtiy",
+        "form": form
+    }
+    return render(request,"create_community.html", context=context)
 
 def suggestions_view(request):
 

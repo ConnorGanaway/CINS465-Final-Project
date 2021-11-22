@@ -31,8 +31,13 @@
           <ul class="menu">
             <li><a href="/">Home</a></li>
             {% if request.user.is_authenticated %}
+            {% if request.path != "/create_community/" %}
+              <li><a href="/create_community/">Create Community</a><li>
+            {% endif %}
             {% if request.path != "/" %}
-            <li><a href="{{ request.path }}suggestion/">Add Suggestion</a><li>
+              {% if request.path != "/create_community/" %}
+              <li><a href="{{ request.path }}suggestion/">Add Suggestion</a><li>
+              {% endif %}
             {% endif %}
             <li>Welcome {{ request.user.username }}</li>
             {% else %}
