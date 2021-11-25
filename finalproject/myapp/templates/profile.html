@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/app2.css' %}">
+{% endblock %}
+{% block content %}
+<div class="grid-container">
+    <div class="grid-x grid-padding-x">
+        <div class="large-12 medium-12 small-12 cell">
+            {% if request.user.is_authenticated %}
+            <h3>
+              <center>Welcome {{ request.user.username }} to your Profile Page</center>
+            </h3>
+            {% else %}
+            <h3>
+              <center>Please Login into to view your Communities</center>
+            </h3>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://unpkg.com/vue@next"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="{% static 'js/vue.js' %}"></script>
+{% endblock %}

@@ -182,6 +182,7 @@ def suggestions_view(request):
         #community_object = models.CommunityModel.object.filter()
         temp_sugg["community"] = sugg.community.community
         temp_sugg["id"] = sugg.id
+        temp_sugg["vote"] = sugg.vote
         temp_sugg["author"] = sugg.author.username
         temp_sugg["date"] = sugg.published_on.strftime("%Y-%m-%d")
         if sugg.image:
@@ -214,3 +215,12 @@ def suggestions_view(request):
         suggestion_list["suggestions"] += [temp_sugg]
 
     return JsonResponse(suggestion_list)
+
+def profile_view(request, name):
+    if request.method == "POST":
+        return redirect("/")
+
+    context = {
+        "name": name
+    }
+    return render(request,"profile.html", context=context)

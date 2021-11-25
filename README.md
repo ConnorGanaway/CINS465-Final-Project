@@ -6,6 +6,18 @@
   - How do I edit it so it uses a link with a <std:community_id> which
     changes in the link
 
-- Community Form is not saving
-  - Its identical to the suggestion and comment, form
-  - I'll be done when I'm able to view the clickable link on the homepage
+- Up Vote And Down vote feature
+  - Find images without transparent background
+  - Resize Images Correctly (Or find smaller images)
+  - Add javascript code to change the vote number on the website
+    - Increment when the upvote image is clicked
+    - Decrement when the downvote image is clicked
+    - Also update the vote attribute for the suggestion model in the database
+
+- Followed communities feature
+  - add users who followed to the community model
+  - on the index page, if the user is on the community models followed list attribute.
+    render the community in the list
+
+- Create funny schmeddit logo for the website to be out on the footer
+  - create footer html page for logo and my name

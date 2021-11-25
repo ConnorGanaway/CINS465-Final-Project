@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="{% static 'css/app.min.css' %}">
 </head>
 
-
 <body>
     <div class="top-bar">
         <div class="top-bar-left">
@@ -36,10 +35,12 @@
             {% endif %}
             {% if request.path != "/" %}
               {% if request.path != "/create_community/" %}
-              <li><a href="{{ request.path }}suggestion/">Add Suggestion</a><li>
+                {% if request.path != "/profile/{{ request.user.username }}/" %}
+                  <li><a href="{{ request.path }}suggestion/">Add Suggestion</a><li>
+                {% endif %}
               {% endif %}
             {% endif %}
-            <li>Welcome {{ request.user.username }}</li>
+            <li><a href="/profile/{{ request.user.username }}/">{{ request.user.username }}</a></li>
             {% else %}
             <li>Welcome Guest</li>
             {% endif %}

@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User as auth_user
 
 # Create your models here.
+
 class CommunityModel(models.Model):
     community = models.CharField(max_length=120)
 
@@ -13,6 +14,7 @@ class SuggestionModel(models.Model):
     author = models.ForeignKey(auth_user, on_delete=models.CASCADE)
     community = models.ForeignKey(CommunityModel, on_delete=models.CASCADE)
     published_on = models.DateTimeField(auto_now_add=True)
+    vote = models.IntegerField(default=0)
     image = models.ImageField(
         max_length = 144,
         upload_to = 'uploads/%Y/%m/%d/',

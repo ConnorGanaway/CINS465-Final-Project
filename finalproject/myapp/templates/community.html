@@ -19,7 +19,18 @@
                         <h3 class="lead">{{ sugg.community }} - {{ sugg.suggestion }}</h3>
                         <img v-bind:src="sugg.image" v:alt="sugg.image_desc" />
                         <br>
-                        {{ sugg.author }} - {{ sugg.date }}
+                        <style>
+                          .vote {
+                            width: 10%;
+                            height: auto;
+                          }
+                        </style>
+
+                        <img src="../../static/images/upvote.png" alt="Up Vote" style="object-fit:scale-down; width=10px; height=auto;"/> <br>
+                        {{ sugg.vote }} - {{ sugg.author }} - {{ sugg.date }} <br>
+                        <div class="vote">
+                          <img src="../../static/images/downvote.png" alt="Down Vote"> <br>
+                        </div>
                         <div class="grid-container">
                             <div class="grid-x grid-padding-x">
                                 <div class="large-11 medium-11 small-11 large-offset-1 medium-offset-1 small-offset-1 cell" v-for="comm in sugg.comments">
