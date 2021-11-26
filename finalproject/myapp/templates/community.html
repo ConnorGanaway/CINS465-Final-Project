@@ -5,6 +5,7 @@
 {% block css %}
 <link rel="stylesheet" href="{% static 'css/posts.css' %}">
 <link rel="stylesheet" href="{% static 'css/online-users.css' %}">
+<link rel="stylesheet" href="{% static 'css/voting.css' %}">
 {% endblock %}
 {% block content %}
 <div id="list-rendering">
@@ -38,9 +39,7 @@
                 <div class="card-info">
                     <div class="card-info-content">
                         <h3 class="lead">{{ sugg.author }} - {{ sugg.date }}</h3>
-                        <img v-bind:src="sugg.image" v:alt="sugg.image_desc" />
-                        <br>
-
+                        <img v-bind:src="sugg.image" v:alt="sugg.image_desc" /><br>
                         <div id="counter">
                           <img src="../../static/images/upvote1.png" alt="Up Vote" onclick="increment()"/> <br>
                           {{ counter }} - {{ sugg.suggestion }}<br>

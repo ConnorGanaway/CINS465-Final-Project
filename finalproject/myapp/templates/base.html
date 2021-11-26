@@ -41,7 +41,15 @@
                 {% endif %}
               {% endif %}
             {% endif %}
-            <li><a href="/profile/{{ request.user.username }}/">{{ request.user.username }}</a></li>
+            <ul class="dropdown menu" data-dropdown-menu id="primary-menu">
+              <li>
+                <a href="#">{{ request.user.first_name }}</a>
+                <ul class="menu">
+                  <li><a href="/profile/{{ request.user.username }}/">Profile</a></li>
+                  <li><a href="#">Change Picture</a></li>
+                </ul>
+              </li>
+            </ul>
             {% else %}
             <li>Welcome Guest</li>
             {% endif %}
@@ -52,6 +60,7 @@
     {% endblock %}
     <script src="{% static 'js/vendor.js' %}"></script>
     <script src="{% static 'js/app.min.js' %}"></script>
+    <script src="{% static 'js/dropdown.js' %}"></script>
     {% block scripts %}
     {% endblock %}
 </body>

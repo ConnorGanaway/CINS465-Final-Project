@@ -3,16 +3,49 @@
 
 {% block title %}{{ title }}{% endblock %}
 {% block css %}
-<link rel="stylesheet" href="{% static 'css/posts.css' %}">
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
 {% endblock %}
 {% block content %}
 <div class="grid-container">
     <div class="grid-x grid-padding-x">
         <div class="large-12 medium-12 small-12 cell">
             {% if request.user.is_authenticated %}
-            <h3>
-              <center>Welcome {{ request.user.username }} to your Profile Page</center>
-            </h3>
+            <br>
+            <div class="card-profile-stats">
+              <div class="card-profile-stats-intro">
+                <img class="card-profile-stats-intro-pic" src="{% static 'images/default.png' %}" alt="profile-image" />
+                <div class="card-profile-stats-intro-content">
+                  <h3>{{ request.user.first_name }} {{ request.user.last_name }}</h3>
+                  <p>Joined {{ request.user.date_joined}}</small></p>
+                </div> <!-- /.card-profile-stats-intro-content -->
+              </div> <!-- /.card-profile-stats-intro -->
+
+              <hr />
+
+              <div class="card-profile-stats-container">
+                <div class="card-profile-stats-statistic">
+                  <span class="stat">25</span>
+                  <p>posts</p>
+                </div> <!-- /.card-profile-stats-statistic -->
+                <div class="card-profile-stats-statistic">
+                  <span class="stat">125</span>
+                  <p>followers</p>
+                </div> <!-- /.card-profile-stats-statistic -->
+                <div class="card-profile-stats-statistic">
+                  <span class="stat">88</span>
+                  <p>likes</p>
+                </div> <!-- /.card-profile-stats-statistic -->
+              </div> <!-- /.card-profile-stats-container -->
+
+              <div class="card-profile-stats-more">
+                <p class="card-profile-stats-more-link"><a href="#"><i class="fa fa-angle-down" aria-hidden="true"></i></a></p>
+                <div class="card-profile-stats-more-content">
+                  <p>{{ request.user.}}</p>
+                </div> <!-- /.card-profile-stats-more-content -->
+              </div> <!-- /.card-profile-stats-more -->
+            </div> <!-- /.card-profile-stats -->
+
+
             {% else %}
             <h3>
               <center>Please Login into to view your Communities</center>
@@ -25,5 +58,5 @@
 {% block scripts %}
 <script src="https://unpkg.com/vue@next"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script src="{% static 'js/ListRender.js' %}"></script>
+<script src="{% static 'js/profile.js' %}"></script>
 {% endblock %}

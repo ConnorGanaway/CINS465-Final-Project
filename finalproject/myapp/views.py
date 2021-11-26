@@ -228,3 +228,6 @@ def profile_view(request, name):
         "name": name
     }
     return render(request,"profile.html", context=context)
+
+def page_not_found_view(request, exception):
+    return render(request, '404.html', status=404)

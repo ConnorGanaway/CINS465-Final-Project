@@ -16,10 +16,15 @@ class CommunityForm(forms.Form):
         label='Community',
         max_length=120,
         )
+    about_field = forms.CharField(
+        label='About',
+        max_length=500,
+    )
 
     def save(self, request):
         community_instance = models.CommunityModel()
         community_instance.community = self.cleaned_data["community_field"]
+        community_instance.about = self.cleaned_data["about_field"]
         community_instance.save()
         return community_instance
 
@@ -79,6 +84,8 @@ class RegistrationForm(UserCreationForm):
     class Meta:
         model = auth_user
         fields = (
+            "first_name",
+            "last_name",
             "username",
             "email",
             "password1",
