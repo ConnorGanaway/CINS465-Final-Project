@@ -3,7 +3,8 @@
 
 {% block title %}{{ title }}{% endblock %}
 {% block css %}
-<link rel="stylesheet" href="{% static 'css/app2.css' %}">
+<link rel="stylesheet" href="{% static 'css/posts.css' %}">
+<link rel="stylesheet" href="{% static 'css/online-users.css' %}">
 {% endblock %}
 {% block content %}
 <div id="list-rendering">
@@ -11,14 +12,34 @@
         <div class="grid-x grid-padding-x">
             <div class="large-12 medium-12 small-12 cell">
                 {% if request.user.is_authenticated %}
-                <h3>
-                  <center>Choose a commuity</center>
-                </h3>
-                <ul>
-                  {% for c in community_list %}
-                    <li><a href="community/{{ c }}/">{{ c }}</a></li>
-                  {% endfor %}
-                </ul>
+                <h3 style="color:black; padding-left: 100px;"> </h3>
+                <div class="holy-grail-grid">
+
+                  <div class="holy-grail-left">
+                    <h3>Left Content</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Molestias mollitia debitis at atque temporibus.</p>
+                  </div>
+
+                  <div class="holy-grail-middle">
+                    <center><h3>Center Content</h3></center>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Molestias mollitia debitis at atque temporibus ratione molestiae id eos, cupiditate numquam dolor vero totam, quisquam libero voluptas. Animi ipsa cumque, tempore.</p>
+                  </div>
+
+                  <div class="holy-grail-right">
+                    <h3>Right Content</h3>
+                    <ul>
+                      <li><a href="#">Link 1</a></li>
+                    </ul>
+                  </div>
+                  <div class="holy-grail-footer">
+                    <h3>Your Communities</h3>
+                    <ul style="color:black">
+                      {% for c in community_list %}
+                        <a href="community/{{ c }}/">{{ c }}</a><br>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </div>
                 {% else %}
                 <h3>
                   <center>Please Login into to view your Communities</center>
@@ -32,5 +53,5 @@
 {% block scripts %}
 <script src="https://unpkg.com/vue@next"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script src="{% static 'js/vue.js' %}"></script>
+<script src="{% static 'js/ListRender.js' %}"></script>
 {% endblock %}

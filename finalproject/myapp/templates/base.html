@@ -8,10 +8,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/app.min.css' %}">
+    {% block css %}{% endblock%}
 </head>
 
-<body>
-    <div class="top-bar">
+<body style="background-color:#3386FF;">
+    <div class="top-bar" style="background-color:grey;">
         <div class="top-bar-left">
           <ul class="menu">
             <li class="menu-text">Reddit Clone</li>

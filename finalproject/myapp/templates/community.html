@@ -3,38 +3,54 @@
 
 {% block title %}{{ title }}{% endblock %}
 {% block css %}
-<link rel="stylesheet" href="{% static 'css/app2.css' %}">
+<link rel="stylesheet" href="{% static 'css/posts.css' %}">
+<link rel="stylesheet" href="{% static 'css/online-users.css' %}">
 {% endblock %}
 {% block content %}
 <div id="list-rendering">
     <div class="grid-container">
         <div class="grid-x grid-padding-x">
           <div class="large-12 medium-1 small-12 cell">
-            <center>{{ community_id }}</center>
+            <h2>
+              <center>{{ community_id }}</center>
+            </h2>
+              <div class="card-info" style="position: absolute; right: 50px; top: 110px; width: 250px;">
+                  <div class="card-info-content">
+                    <h3>About</h3>
+                    <p>{{ about }}</p>
+                </div>
+              </div>
+              <div class="card-info" style="position: absolute; right: 50px; top: 700px; width: 250px;">
+                  <div class="card-info-content">
+                    <h3>Real Time Chat</h3>
+                    <ul>
+                      <li>User 1</li>
+                      <li>User 2</li>
+                      <li>User 3</li>
+                      <li>User 4</li>
+                      <li>User 5</li>
+                    </ul>
+                </div>
+              </div>
             <div class="large-12 medium-12 small-12 cell" v-for="sugg in suggestions">
 
                 {% verbatim %}
                 <div class="card-info">
                     <div class="card-info-content">
-                        <h3 class="lead">{{ sugg.community }} - {{ sugg.suggestion }}</h3>
+                        <h3 class="lead">{{ sugg.author }} - {{ sugg.date }}</h3>
                         <img v-bind:src="sugg.image" v:alt="sugg.image_desc" />
                         <br>
-                        <style>
-                          .vote {
-                            width: 10%;
-                            height: auto;
-                          }
-                        </style>
 
-                        <img src="../../static/images/upvote.png" alt="Up Vote" style="object-fit:scale-down; width=10px; height=auto;"/> <br>
-                        {{ sugg.vote }} - {{ sugg.author }} - {{ sugg.date }} <br>
-                        <div class="vote">
-                          <img src="../../static/images/downvote.png" alt="Down Vote"> <br>
+                        <div id="counter">
+                          <img src="../../static/images/upvote1.png" alt="Up Vote" onclick="increment()"/> <br>
+                          {{ counter }} - {{ sugg.suggestion }}<br>
+                          <img src="../../static/images/downvote1.png" alt="Down Vote" onclick="decrement()"/> <br>
                         </div>
+
                         <div class="grid-container">
                             <div class="grid-x grid-padding-x">
                                 <div class="large-11 medium-11 small-11 large-offset-1 medium-offset-1 small-offset-1 cell" v-for="comm in sugg.comments">
-                                    <div class="card-info">
+                                    <div class="card-info" style="width:650px;">
                                         <div class="card-info-content">
                                             <h3 class="lead">{{ comm.comment }}</h3>
                                                   {{ comm.author }} - {{ comm.date }}
@@ -60,5 +76,6 @@
 {% block scripts %}
 <script src="https://unpkg.com/vue@next"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script src="{% static 'js/vue.js' %}"></script>
+<script src="{% static 'js/ListRender.js' %}"></script>
+<script src="{% static 'js/vote.js' %}"></script>
 {% endblock %}

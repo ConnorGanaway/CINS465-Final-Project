@@ -61,9 +61,13 @@ def community_view(request, community_id):
     if request.method == "POST":
         return redirect("/")
 
+    cur_community = models.CommunityModel.objects.get(community=community_id)
+    about = cur_community.about
+
     context = {
         "name": "CURRENT COMMUNITY NAME - FIX THIS",
-        "community_id": community_id
+        "community_id": community_id,
+        "about": about
     }
     return render(request,"community.html", context=context)
 

@@ -19,5 +19,7 @@
   - on the index page, if the user is on the community models followed list attribute.
     render the community in the list
 
+- Real Time chat feature with web sockets (How the fuck do I do this?)
+
 - Create funny schmeddit logo for the website to be out on the footer
   - create footer html page for logo and my name
