@@ -13,6 +13,7 @@ class CommunityModel(models.Model):
     def __str__(self):
         return str(self.community)
 
+
 class SuggestionModel(models.Model):
     suggestion = models.CharField(max_length=240)
     author = models.ForeignKey(auth_user, on_delete=models.CASCADE)

@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
+from slugify import slugify
 
 from . import models
 from . import forms
@@ -64,9 +65,12 @@ def community_view(request, community_id):
     cur_community = models.CommunityModel.objects.get(community=community_id)
     about = cur_community.about
 
+    slugName = slugify(str(cur_community.community))
+
     context = {
         "name": "CURRENT COMMUNITY NAME - FIX THIS",
         "community_id": community_id,
+        "slugName": slugName,
         "about": about
     }
     return render(request,"community.html", context=context)

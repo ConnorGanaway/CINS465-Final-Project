@@ -17,20 +17,13 @@
             </h2>
               <div class="card-info" style="position: absolute; right: 50px; top: 110px; width: 250px;">
                   <div class="card-info-content">
-                    <h3>About</h3>
-                    <p>{{ about }}</p>
+                      <center><a href="/community/{{ slugName }}/chat/">Real Time Chat</a></center>
                 </div>
               </div>
-              <div class="card-info" style="position: absolute; right: 50px; top: 700px; width: 250px;">
+              <div class="card-info" style="position: absolute; right: 50px; top: 170px; width: 250px;">
                   <div class="card-info-content">
-                    <h3>Real Time Chat</h3>
-                    <ul>
-                      <li>User 1</li>
-                      <li>User 2</li>
-                      <li>User 3</li>
-                      <li>User 4</li>
-                      <li>User 5</li>
-                    </ul>
+                    <h3>About</h3>
+                    <p>{{ about }}</p>
                 </div>
               </div>
             <div class="large-12 medium-12 small-12 cell" v-for="sugg in suggestions">
