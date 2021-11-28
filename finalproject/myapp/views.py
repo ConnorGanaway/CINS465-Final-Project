@@ -231,3 +231,11 @@ def profile_view(request, name):
 
 def page_not_found_view(request, exception):
     return render(request, '404.html', status=404)
+
+def chatIndex(request):
+    return render(request, 'chat/chatIndex.html')
+
+def room(request, room_name):
+    return render(request, 'chat/room.html', {
+        'room_name': room_name
+    })

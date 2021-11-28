@@ -17,4 +17,6 @@ urlpatterns = [
     path('cur_community/<str:community_id>/', views.cur_community_view),
     path('create_community/', views.create_community_view),
     path('profile/<str:name>/', views.profile_view),
+    path('chat/', views.chatIndex, name='chatIndex'),
+    path('chat/<str:room_name>/', views.room, name='room'),
 ]
