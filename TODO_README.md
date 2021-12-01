@@ -6,17 +6,14 @@
   - How do I edit it so it uses a link with a <std:community_id> which
     changes in the link
 
-2. List the first X Communities on the home
-  
-
-3. Index Page
+2. Index Page
   - Replace Three box layout with search bar for Community Names
     - search foundation building blocks for a search bar
   - Repurpose footer box:
   - Create funny schmeddit logo for the website to be out on the footer
   - Add my name, year, class, and social links (With nice looking pictures)
 
-4. Up Vote And Down vote feature
+3. Up Vote And Down vote feature
   - Find images without transparent background
   - Resize Images Correctly (Or find smaller images)
   - Optimizations (Probably won't have time to change this)
