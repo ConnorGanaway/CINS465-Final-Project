@@ -9,11 +9,24 @@ services:
        - .:/code
     links:
        - redis:redis
-    ports:
-       - 8000:8000
+    expose:
+       - 8000
+    user: 1001:1002 ## needed for linux
     command: python /code/finalproject/manage.py runserver 0.0.0.0:8000
 
+  nginx:
+   restart: always
+   build: ./nginx
+   depends_on:
+      - web
+   ports:
+      - 80:80
+   links:
+      - web:web
+
+
   redis:
+   restart: always
    image: redis:latest
    expose:
       - 6379

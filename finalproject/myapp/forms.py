@@ -98,3 +98,10 @@ class RegistrationForm(UserCreationForm):
         if commit:
             user.save()
         return user
+
+    def saveUser(self, commit=True):
+        user_instance = models.UserModel()
+        user_instance.username = self.cleaned_data["username"]
+        if commit:
+            user_instance.save()
+        return user_instance

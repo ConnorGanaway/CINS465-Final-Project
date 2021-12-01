@@ -17,10 +17,16 @@
             </h2>
               <div class="card-info" style="position: absolute; right: 50px; top: 110px; width: 250px;">
                   <div class="card-info-content">
+                      <center><a href="{{ request.path }}suggestion/">Add Suggestion</a></center>
                       <center><a href="/community/{{ slugName }}/chat/">Real Time Chat</a></center>
+                      {% if community_id not in current_user.followed_communities %}
+                      <center><a href="/community/{{ community_id }}/follow/">Follow</a></center>
+                      {% else %}
+                      <center><a href="/community/{{ community_id }}/unfollow/">Unfollow</a></center>
+                      {% endif %}
                 </div>
               </div>
-              <div class="card-info" style="position: absolute; right: 50px; top: 170px; width: 250px;">
+              <div class="card-info" style="position: absolute; right: 50px; top: 220px; width: 250px;">
                   <div class="card-info-content">
                     <h3>About</h3>
                     <p>{{ about }}</p>
@@ -34,9 +40,10 @@
                         <h3 class="lead">{{ sugg.author }} - {{ sugg.date }}</h3>
                         <img v-bind:src="sugg.image" v:alt="sugg.image_desc" /><br>
                         <div id="counter">
-                          <img src="../../static/images/upvote1.png" alt="Up Vote" onclick="increment()"/> <br>
-                          {{ counter }} - {{ sugg.suggestion }}<br>
-                          <img src="../../static/images/downvote1.png" alt="Down Vote" onclick="decrement()"/> <br>
+                          <a v-bind:href="'/community/'+sugg.community+'/suggestion/'+sugg.id+'/upvote/'"><img src="../../static/images/upvote1.png" alt="Up Vote"/></a> <br>
+                          {{ sugg.vote }} - {{ sugg.suggestion }}<br>
+                          <a v-bind:href="'/community/'+sugg.community+'/suggestion/'+sugg.id+'/downvote/'"><img src="../../static/images/downvote1.png" alt="Down Vote"/></a> <br>
+                          
                         </div>
 
                         <div class="grid-container">
@@ -45,14 +52,14 @@
                                     <div class="card-info" style="width:650px;">
                                         <div class="card-info-content">
                                             <h3 class="lead">{{ comm.comment }}</h3>
-                                                  {{ comm.author }} - {{ comm.date }}
+                                            {{ comm.author }} - {{ comm.date }}
                                         </div>
                                     </div>
                                 </div>
                                 <div class="large-11 medium-11 small-11 large-offset-1 medium-offset-1 small-offset-1 cell">
                                     {% endverbatim %}
                                     {% if request.user.is_authenticated %}
-                                      <a class="button" v-bind:href="'comment/'+sugg.id+'/'">comment</a>
+                                    <a class="button" v-bind:href="'comment/'+sugg.id+'/'">comment</a>
                                     {% endif %}
                                     <br>
                                 </div>

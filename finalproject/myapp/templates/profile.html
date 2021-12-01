@@ -24,16 +24,16 @@
 
               <div class="card-profile-stats-container">
                 <div class="card-profile-stats-statistic">
-                  <span class="stat">25</span>
+                  <span class="stat">{{ current_user.numPosts }}</span>
                   <p>posts</p>
                 </div> <!-- /.card-profile-stats-statistic -->
                 <div class="card-profile-stats-statistic">
-                  <span class="stat">125</span>
-                  <p>followers</p>
+                  <span class="stat">{{ numFollowed }}</span>
+                  <p>followed communities</p>
                 </div> <!-- /.card-profile-stats-statistic -->
                 <div class="card-profile-stats-statistic">
-                  <span class="stat">88</span>
-                  <p>likes</p>
+                  <span class="stat">{{ voteScore }}</span>
+                  <p>score</p>
                 </div> <!-- /.card-profile-stats-statistic -->
               </div> <!-- /.card-profile-stats-container -->
 

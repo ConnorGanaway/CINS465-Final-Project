@@ -3,6 +3,20 @@ from django.contrib.auth.models import User as auth_user
 
 # Create your models here.
 
+class UserModel(models.Model):
+    username = models.CharField(max_length=240)
+    profile_picture = models.ImageField(
+        max_length = 144,
+        upload_to = 'uploads/profiles/',
+        null=True
+    )
+    followed_communities = models.TextField(null=True)
+    numPosts = models.IntegerField(default=0)
+
+    def __str__(self):
+        return str(self.username)
+
+
 class CommunityModel(models.Model):
     community = models.CharField(max_length=120)
     about = models.CharField(
