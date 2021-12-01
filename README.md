@@ -7,9 +7,7 @@
     changes in the link
 
 2. Declutter Menu
-  - Remove "Reddit Clone, Logout, and Admin" links
   - Add dropdown(just like right side) for communities
-  - Add logout link (moved from right left side) to the dropdown for profile
   - Repurpose footer box:
     - Fix size issue (this will most likely go away when I don't render communities there)
     - Create funny schmeddit logo for the website to be out on the footer

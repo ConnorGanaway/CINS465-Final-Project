@@ -6,6 +6,21 @@
 <link rel="stylesheet" href="{% static 'css/posts.css' %}">
 <link rel="stylesheet" href="{% static 'css/online-users.css' %}">
 {% endblock %}
+<div class="top-bar-right">
+  <ul class="menu">
+    <ul class="dropdown menu" data-dropdown-menu id="primary-menu">
+      <li>
+        <a href="#">{{ request.user.first_name }}</a>
+        <ul class="menu">
+          <li><a href="/profile/{{ request.user.username }}/">Profile</a></li>
+          <li><a href="#">Change Picture</a></li>
+          <li><a href="/logout/">Logout</a></li>
+        </ul>
+      </li>
+    </ul>
+  </ul>
+</div>
+
 {% block content %}
 <div id="list-rendering">
     <div class="grid-container">
