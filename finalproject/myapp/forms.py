@@ -11,6 +11,18 @@ def must_be_unique(value):
     # Always return the cleaned data
     return value
 
+class ChangePictureForm(forms.Form):
+    profile_picture = forms.ImageField(
+        label="Profile Picture",
+        required=True
+    )
+
+    def save(self, request, name):
+        user_instance = models.UserModel.objects.get(username=name)
+        user_instance.profile_picture = self.cleaned_data["profile_picture"]
+        user_instance.save()
+        return user_instance
+
 class CommunityForm(forms.Form):
     community_field = forms.CharField(
         label='Community',
@@ -21,8 +33,8 @@ class CommunityForm(forms.Form):
         max_length=500,
     )
 
-    def save(self, request):
-        community_instance = models.CommunityModel()
+    def save(self, request, name):
+        community_instance = models.CommunityModel(username=name)
         community_instance.community = self.cleaned_data["community_field"]
         community_instance.about = self.cleaned_data["about_field"]
         community_instance.save()
@@ -102,6 +114,21 @@ class RegistrationForm(UserCreationForm):
     def saveUser(self, commit=True):
         user_instance = models.UserModel()
         user_instance.username = self.cleaned_data["username"]
+        user_instance.username = self.cleaned_data["first_name"]
+        user_instance.username = self.cleaned_data["last_name"]
         if commit:
             user_instance.save()
         return user_instance
+
+class UserAboutForm(forms.Form):
+    about = forms.CharField(
+        label="About",
+        required=False
+    )
+
+    def save(self, request, name):
+        user_instance = models.UserModel.objects.get(username=name)
+        user_instance.profile_picture = self.cleaned_data["about"]
+        user_instance.save()
+        return user_instance
+

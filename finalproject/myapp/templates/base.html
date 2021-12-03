@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/app.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/loading.css' %}">
     {% block css %}{% endblock%}
 </head>
 
@@ -31,7 +32,7 @@
               <li>
                 <a href="#">Communities</a>
                 <ul class="menu">
-                  {% for c in community_list %}
+                  {% for c in follow_list %}
                     <a href="/community/{{ c }}/">{{ c }}</a><br>
                   {% endfor %}
                 </ul>
@@ -43,7 +44,7 @@
                 <ul class="menu">
                   {% if request.path != "/create_community/" %}
                   <li><a href="/profile/{{ request.user.username }}/">Profile</a></li>
-                  <li><a href="#">Change Picture</a></li>
+                  <li><a href="/profile/{{ request.user.username }}/change_picture/">Change Picture</a></li>
                   <li><a href="/create_community/">Create Community</a><li>
                   <li><a href="/logout/">Logout</a></li>
                   {% endif %}
@@ -56,11 +57,15 @@
           </ul>
         </div>
       </div>
+    <div class="loader-wrapper">
+        <span class="loader"><span class="loader-inner"></span></span>
+    </div>
     {% block content %}
     {% endblock %}
     <script src="{% static 'js/vendor.js' %}"></script>
     <script src="{% static 'js/app.min.js' %}"></script>
     <script src="{% static 'js/dropdown.js' %}"></script>
+    <script src="{% static 'js/loading.js' %}"></script>
     {% block scripts %}
     {% endblock %}
 </body>

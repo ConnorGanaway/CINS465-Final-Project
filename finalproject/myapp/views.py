@@ -15,19 +15,31 @@ def index(request):
     if request.method == "POST":
         redirect("/")
 
-    community_list = []
+    follow_list = []
+    all_communities_list = []
+    pending_friends_list = []
+    friends_list = []
+    current_user = "Guest"
+    
     if request.user.is_authenticated:
+
+        all_communities_list = models.CommunityModel.objects.all()
         name = request.user.username
         current_user = models.UserModel.objects.get(username=name)
 
-        #models.UserModel.objects.all(followed_communities)
         jsonDec = json.decoder.JSONDecoder()
-        community_list = jsonDec.decode(current_user.followed_communities)
+        follow_list = jsonDec.decode(current_user.followed_communities)
+        pending_friends_list = jsonDec.decode(current_user.pending_friends_list)
+        friends_list = jsonDec.decode(current_user.friends_list)
 
     context = {
         "title": "Final Project",
         "body":"Hello World",
-        "community_list": community_list
+        "all_communities_list": all_communities_list,
+        "current_user": current_user,
+        "follow_list": follow_list,
+        "pending_friends_list": pending_friends_list,
+        "friends_list": friends_list
     }
     return render(request,"index.html", context=context)
 
@@ -52,18 +64,21 @@ def register_view(request):
     username = None
     if request.method == "POST":
         form = forms.RegistrationForm(request.POST)
+        aboutForm = forms.UserAboutForm(request.POST)
         if form.is_valid():
             form.save(request)
 
-            #create user for UserModel
             form.saveUser(request)
+            aboutForm.save(request) ##need second argument for name(How do I do this)
             return redirect("/login/")
     else:
         form = forms.RegistrationForm()
+        aboutForm = forms.UserAboutForm()
 
     context = {
         "title": "Registration Page",
-         "form": form
+         "form": form,
+         "aboutForm": aboutForm
     }
     return render(request,"registration/register.html", context=context)
 
@@ -71,14 +86,14 @@ def community_view(request, community_id):
     if request.method == "POST":
         return redirect("/")
 
-    community_list = []
+    follow_list = []
     if request.user.is_authenticated:
         name = request.user.username
         current_user = models.UserModel.objects.get(username=name)
 
         #models.UserModel.objects.all(followed_communities)
         jsonDec = json.decoder.JSONDecoder()
-        community_list = jsonDec.decode(current_user.followed_communities)
+        follow_list = jsonDec.decode(current_user.followed_communities)
 
     showFollow = False
     current_user = None
@@ -101,7 +116,7 @@ def community_view(request, community_id):
         "community_id": community_id,
         "slugName": slugName,
         "about": about,
-        "community_list": community_list,
+        "follow_list": follow_list,
         "showFollow": showFollow,
         "current_user": current_user
     }
@@ -248,13 +263,13 @@ def suggestion_view(request, community_id):
     if not request.user.is_authenticated:
         return redirect("/login/")
 
-    community_list = []
+    follow_list = []
     name = request.user.username
     current_user = models.UserModel.objects.get(username=name)
 
     #models.UserModel.objects.all(followed_communities)
     jsonDec = json.decoder.JSONDecoder()
-    community_list = jsonDec.decode(current_user.followed_communities)
+    follow_list = jsonDec.decode(current_user.followed_communities)
 
     if request.method == "POST":
         form = forms.SuggestionForm(request.POST, request.FILES)
@@ -271,20 +286,20 @@ def suggestion_view(request, community_id):
         "community_id": community_id,
         "form": form,
         "current_user": current_user,
-        "community_list": community_list
+        "follow_list": follow_list
     }
     return render(request,"suggestion.html", context=context)
 
 @login_required
 def comment_view(request, community_id, sugg_id):
 
-    community_list = []
+    follow_list = []
     name = request.user.username
     current_user = models.UserModel.objects.get(username=name)
 
     #models.UserModel.objects.all(followed_communities)
     jsonDec = json.decoder.JSONDecoder()
-    community_list = jsonDec.decode(current_user.followed_communities)
+    follow_list = jsonDec.decode(current_user.followed_communities)
 
     if request.method == "POST":
         form = forms.CommentForm(request.POST)
@@ -298,22 +313,22 @@ def comment_view(request, community_id, sugg_id):
     context = {
         "title": "Comment",
         "community_id": community_id,
-        "community_list": community_list,
+        "follow_list": follow_list,
         "sugg_id": sugg_id,
-       "form": form
+        "form": form
     }
     return render(request,"comment.html", context=context)
 
 @login_required
 def create_community_view(request):
 
-    community_list = []
+    follow_list = []
     name = request.user.username
     current_user = models.UserModel.objects.get(username=name)
 
     #models.UserModel.objects.all(followed_communities)
     jsonDec = json.decoder.JSONDecoder()
-    community_list = jsonDec.decode(current_user.followed_communities)
+    follow_list = jsonDec.decode(current_user.followed_communities)
 
     if request.method == "POST":
         form = forms.CommunityForm(request.POST)
@@ -327,7 +342,7 @@ def create_community_view(request):
 
     context = {
         "title": "Create Communtiy",
-        "community_list": community_list,
+        "follow_list": follow_list,
         "form": form
     }
     return render(request,"create_community.html", context=context)
@@ -383,30 +398,85 @@ def profile_view(request, name):
         return redirect("/")
 
     posts = models.SuggestionModel.objects.filter(author__username=name)
-    voteScore = None
+    voteSum = []
 
     for p in posts:
-        voteScore =+ p.vote
+        voteSum.append(p.vote)
+
+    voteScore = sum(voteSum)
+
+    # = request.user.username
+    current_profile = models.UserModel.objects.get(username=name)
+    first_name = current_profile.first_name
+    last_name = current_profile.last_name
+    profile_username = current_profile.username
+    profile_picture = current_profile.profile_picture
+    numPosts = len(posts)
+    showButton = "True"
+
+    jsonDec = json.decoder.JSONDecoder()
+    friends_list = jsonDec.decode(current_profile.friends_list)
+
+    numFriends = len(friends_list)
 
     if request.user.is_authenticated:
-        community_list = []
-        name = request.user.username
-        current_user = models.UserModel.objects.get(username=name)
+        follow_list = []
 
         #models.UserModel.objects.all(followed_communities)
         jsonDec = json.decoder.JSONDecoder()
-        community_list = jsonDec.decode(current_user.followed_communities)
+        follow_list = jsonDec.decode(current_profile.followed_communities)
 
-        numFollowed = len(community_list)
+        numFollowed = len(follow_list)
+
+        if request.user.username in current_profile.friends_list:
+            showButton = "False"
+
+        if request.user.username in current_profile.pending_friends_list:
+            showButton = "False"
 
     context = {
         "name": name,
-        "current_user": current_user,
+        "first_name": first_name,
+        "last_name": last_name,
+        "current_user": current_profile,
+        "profile_username": profile_username,
+        "numPosts": numPosts,
         "numFollowed": numFollowed,
         "voteScore": voteScore,
-        "community_list": community_list
+        "numFriends": numFriends,
+        "follow_list": follow_list, 
+        "profile_picture": profile_picture, 
+        "showButton": showButton
     }
     return render(request,"profile.html", context=context)
+
+@login_required
+def change_profile_picture_view(request, name):
+
+    follow_list = []
+    current_user = models.UserModel.objects.get(username=name)
+
+    #models.UserModel.objects.all(followed_communities)
+    jsonDec = json.decoder.JSONDecoder()
+    follow_list = jsonDec.decode(current_user.followed_communities)
+
+    if request.method == "POST":
+        form = forms.ChangePictureForm(request.POST, request.FILES)
+        if form.is_valid() and request.user.is_authenticated:
+            form.save(request, name)
+            link = "/profile/" + str(name) + "/"
+            return redirect(str(link))
+    else:
+        form = forms.ChangePictureForm()
+
+    context = {
+        "title": "Change Picture",
+        "name": name,
+        "current_user": current_user,
+        "follow_list": follow_list,
+        "form": form
+    }
+    return render(request,"change_picture.html", context=context)
 
 def page_not_found_view(request, exception):
     return render(request, '404.html', status=404)
@@ -417,17 +487,144 @@ def chatIndex(request):
 def room(request, room_name):
 
     if request.user.is_authenticated:
-        community_list = []
+        follow_list = []
         name = request.user.username
         current_user = models.UserModel.objects.get(username=name)
 
         #models.UserModel.objects.all(followed_communities)
         jsonDec = json.decoder.JSONDecoder()
-        community_list = jsonDec.decode(current_user.followed_communities)
+        follow_list = jsonDec.decode(current_user.followed_communities)
 
     context = {
         "room_name": room_name,
-        "community_list": community_list
+        "follow_list": follow_list
     }
 
     return render(request, 'chat/room.html', context=context)
+
+def addFriend(request, name_to_follow, user_name):
+    if request.method == "POST":
+        return redirect("/")
+
+    if request.user.is_authenticated:
+        current_profile = models.UserModel.objects.get(username=name_to_follow)
+
+        #Get the Friend List from the Current Profile
+        jsonDec = json.decoder.JSONDecoder()
+        temp_friends_list = jsonDec.decode(current_profile.friends_list)
+
+        temp_pending_list = []
+        #Add Pending Friend Request to user friend list
+        if user_name not in temp_friends_list:
+            temp_pending_list = jsonDec.decode(current_profile.pending_friends_list)
+            temp_pending_list.append(str(user_name))
+
+        current_profile.pending_friends_list = json.dumps(temp_pending_list)
+
+        #Save the changes
+        current_profile.save()
+
+    link = "/profile/" + str(name_to_follow) + "/"
+
+    return redirect(str(link))
+
+def acceptFriendRequest(request, user_name_to_add, user_name):
+    if request.method == "POST":
+        return redirect("/")
+
+    temp_friends_list = []
+    temp_pending_list = []
+
+    #Get CurrentUser
+    if request.user.is_authenticated:
+        current_profile = models.UserModel.objects.get(username=user_name)
+
+        #Get the Follow List from the Current User
+        jsonDec = json.decoder.JSONDecoder()
+        temp_friends_list = jsonDec.decode(current_profile.friends_list)
+        temp_pending_list = jsonDec.decode(current_profile.pending_friends_list)
+
+        #User Accepting the Friend
+        temp_friends_list.append(str(user_name_to_add))
+        if user_name_to_add in temp_pending_list:
+            temp_pending_list.remove(str(user_name_to_add))
+
+        current_profile.friends_list = json.dumps(temp_friends_list)
+        current_profile.pending_friends_list = json.dumps(temp_pending_list)
+
+        #Save the changes
+        current_profile.save()
+
+        #User list who sent request gets updated
+        other_profile = models.UserModel.objects.get(username=user_name_to_add)
+        temp_friends_list = jsonDec.decode(other_profile.friends_list)
+        temp_friends_list.append(str(user_name))
+
+        other_profile.friends_list = json.dumps(temp_friends_list)
+
+        #Save the changes
+        other_profile.save()
+
+    return redirect("/")
+
+def declineFriendRequest(request, user_name_to_decline, user_name):
+    if request.method == "POST":
+        return redirect("/")
+
+    temp_pending_list = []
+
+    if request.user.is_authenticated:
+        current_profile = models.UserModel.objects.get(username=user_name)
+
+        #Get the Follow List from the Current User
+        jsonDec = json.decoder.JSONDecoder()
+        temp_pending_list = jsonDec.decode(current_profile.pending_friends_list)
+
+        #Remove Pending Friend Request from list
+        if user_name_to_decline in temp_pending_list:
+            temp_pending_list.remove(str(user_name_to_decline))
+        current_profile.pending_friends_list = json.dumps(temp_pending_list)
+
+        #Save the changes
+        current_profile.save()
+
+    return redirect("/")
+
+def removeFriend(request, name_to_remove, user_name):
+    if request.method == "POST":
+        return redirect("/")
+
+    temp_friends_list = []
+    temp_pending_list = []
+
+    #Get Current User
+    if request.user.is_authenticated:
+        current_profile = models.UserModel.objects.get(username=user_name)
+        my_profile = models.UserModel.objects.get(username=user_name)
+        jsonDec = json.decoder.JSONDecoder()
+
+        #Get the Friend List from the Current Profile
+        temp_friends_list = jsonDec.decode(current_profile.friends_list)
+
+        #Remove Friend from your friends list
+        if user_name in temp_friends_list:
+            temp_friends_list.remove(str(user_name))
+        current_profile.friends_list = json.dumps(temp_friends_list)
+
+        #Save the changes to the Current Profile
+        current_profile.save()
+
+        #Get the Friend List from my Profile
+        temp_friends_list = jsonDec.decode(my_profile.friends_list)
+
+        #Remove Friend from your friends list
+        if user_name in temp_friends_list:
+            temp_friends_list.remove(str(name_to_remove))
+        my_profile.friends_list = json.dumps(temp_friends_list)
+
+        #Save the changes to my Profile
+        my_profile.save()
+
+    link = "/profile/" + str(name_to_remove) + "/"
+
+    return redirect(str(link))

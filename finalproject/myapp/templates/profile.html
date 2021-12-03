@@ -13,10 +13,21 @@
             <br>
             <div class="card-profile-stats">
               <div class="card-profile-stats-intro">
-                <img class="card-profile-stats-intro-pic" src="{% static 'images/default.png' %}" alt="profile-image" />
+                <img class="card-profile-stats-intro-pic" src="../../{{ profile_picture }}" alt="profile-image" />
                 <div class="card-profile-stats-intro-content">
-                  <h3>{{ request.user.first_name }} {{ request.user.last_name }}</h3>
-                  <p>Joined {{ request.user.date_joined}}</small></p>
+                  <h3>{{ first_name }} {{ last_name }}</h3>
+                  <p>Joined {{ request.user.date_joined }}</small></p>
+                  
+                  {% if request.user.username != profile_username %}
+                    {% if showButton == "True" %}
+                      <p><a href="/profile/{{ profile_username }}/add_friend/{{ request.user.username }}/">Add Friend</a></small></p>
+                    {% else %}
+                      {% if showButton == "True" %}
+                      <p><a href="/profile/{{ profile_username }}/remove_friend/{{ request.user.username }}/">Remove Friend</a></small></p>
+                      {% endif %}
+                    {% endif %}
+                  {% endif %}
+
                 </div> <!-- /.card-profile-stats-intro-content -->
               </div> <!-- /.card-profile-stats-intro -->
 
@@ -24,7 +35,7 @@
 
               <div class="card-profile-stats-container">
                 <div class="card-profile-stats-statistic">
-                  <span class="stat">{{ current_user.numPosts }}</span>
+                  <span class="stat">{{ numPosts }}</span>
                   <p>posts</p>
                 </div> <!-- /.card-profile-stats-statistic -->
                 <div class="card-profile-stats-statistic">
@@ -35,12 +46,16 @@
                   <span class="stat">{{ voteScore }}</span>
                   <p>score</p>
                 </div> <!-- /.card-profile-stats-statistic -->
+                <div class="card-profile-stats-statistic">
+                  <span class="stat">{{ numFriends }}</span>
+                  <p>friends</p>
+                </div> <!-- /.card-profile-stats-statistic -->
               </div> <!-- /.card-profile-stats-container -->
 
               <div class="card-profile-stats-more">
                 <p class="card-profile-stats-more-link"><a href="#"><i class="fa fa-angle-down" aria-hidden="true"></i></a></p>
                 <div class="card-profile-stats-more-content">
-                  <p>{{ request.user.}}</p>
+                  <p>{{ current_user.about }}</p>
                 </div> <!-- /.card-profile-stats-more-content -->
               </div> <!-- /.card-profile-stats-more -->
             </div> <!-- /.card-profile-stats -->
@@ -54,9 +69,13 @@
         </div>
     </div>
 </div>
+<div class="loader-wrapper">
+  <span class="loader"><span class="loader-inner"></span></span>
+</div>
 {% endblock %}
 {% block scripts %}
 <script src="https://unpkg.com/vue@next"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="{% static 'js/loading.js' %}"></script>
 <script src="{% static 'js/profile.js' %}"></script>
 {% endblock %}

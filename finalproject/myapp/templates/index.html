@@ -16,32 +16,37 @@
                 <div class="holy-grail-grid">
 
                   <div class="holy-grail-left">
-                    <h3>Left Content</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Molestias mollitia debitis at atque temporibus.</p>
+                    <center><h3>Pending Friends List</h3></center>
+                    {% for person in pending_friends_list %}
+                      {{ person }}<br>
+                        <ul>
+                          <li><a href="profile/{{ person }}/accept_friend/{{ current_user }}/">Accept Request</a></li>
+                          <li><a href="profile/{{ person }}/decline_friend/{{ current_user }}/">Decline Request</a></li>
+                        </ul>
+                    {% endfor %}
                   </div>
 
                   <div class="holy-grail-middle">
-                    <center><h3>Center Content</h3></center>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Molestias mollitia debitis at atque temporibus ratione molestiae id eos, cupiditate numquam dolor vero totam, quisquam libero voluptas. Animi ipsa cumque, tempore.</p>
-                  </div>
+                    <center><h3>All Communities</h3></center>
+                    <ul style="color:black">
+                      {% for c in all_communities_list %}
+                        <a href="community/{{ c }}/">{{ c }}</a><br>
+                      {% endfor %}
+                    </ul>
+                    </div>
 
                   <div class="holy-grail-right">
-                    <h3>Right Content</h3>
-                    <ul>
-                      <li><a href="#">Link 1</a></li>
-                    </ul>
-                  </div>
-                  <div class="holy-grail-footer">
+                    <center><h3>Friends List</h3></center>
                     <ul style="color:black">
-                      {% for c in community_list %}
-                        <a href="community/{{ c }}/">{{ c }}</a><br>
+                      {% for person in friends_list %}
+                        <a href="profile/{{ person }}/">{{ person }}</a><br>
                       {% endfor %}
                     </ul>
                   </div>
                 </div>
                 {% else %}
                 <h3>
-                  <center>Please Login into to view your Communities</center>
+                  <center>Please Login to view your Dashboard</center>
                 </h3>
                 {% endif %}
             </div>

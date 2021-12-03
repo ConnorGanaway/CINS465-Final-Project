@@ -8,3 +8,7 @@ $('.card-profile-stats-more-link').click(function(e){
   }
   $(this).next('.card-profile-stats-more-content').slideToggle();
 });
+
+$(window).on("load",function(){
+  $(".loader-wrapper").fadeOut("slow");
+});

@@ -5,13 +5,23 @@ from django.contrib.auth.models import User as auth_user
 
 class UserModel(models.Model):
     username = models.CharField(max_length=240)
+    first_name = models.CharField(max_length=120, default="")
+    last_name = models.CharField(max_length=120, default="")
     profile_picture = models.ImageField(
         max_length = 144,
+        default = "../static/images/default.png",
         upload_to = 'uploads/profiles/',
         null=True
     )
-    followed_communities = models.TextField(null=True)
+    followed_communities = models.TextField(default="[]")
+    pending_friends_list = models.TextField(default="[]")
+    friends_list = models.TextField(default="[]")
     numPosts = models.IntegerField(default=0)
+    about = models.CharField(
+        max_length=500, 
+        default="I don't care enough to enter an about section",
+        null=True
+    )
 
     def __str__(self):
         return str(self.username)

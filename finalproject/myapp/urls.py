@@ -21,5 +21,10 @@ urlpatterns = [
     path('cur_community/<str:community_id>/', views.cur_community_view),
     path('create_community/', views.create_community_view),
     path('profile/<str:name>/', views.profile_view),
+    path('profile/<str:name>/change_picture/', views.change_profile_picture_view),
+    path('profile/<str:name_to_follow>/add_friend/<str:user_name>/', views.addFriend),
+    path('profile/<str:name_to_remove>/remove_friend/<str:user_name>/', views.removeFriend),
+    path('profile/<str:user_name_to_add>/accept_friend/<str:user_name>/', views.acceptFriendRequest),
+    path('profile/<str:user_name_to_decline>/decline_friend/<str:user_name>/', views.declineFriendRequest),
     path('community/<str:room_name>/chat/', views.room, name='room'),
 ]
