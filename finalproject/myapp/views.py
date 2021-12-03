@@ -412,7 +412,8 @@ def profile_view(request, name):
     profile_username = current_profile.username
     profile_picture = current_profile.profile_picture
     numPosts = len(posts)
-    showButton = "True"
+    areFriends = "False"
+    pending = "False"
 
     jsonDec = json.decoder.JSONDecoder()
     friends_list = jsonDec.decode(current_profile.friends_list)
@@ -429,10 +430,10 @@ def profile_view(request, name):
         numFollowed = len(follow_list)
 
         if request.user.username in current_profile.friends_list:
-            showButton = "False"
+            areFriends = "True"
 
         if request.user.username in current_profile.pending_friends_list:
-            showButton = "False"
+            pending = "True"
 
     context = {
         "name": name,
@@ -446,7 +447,8 @@ def profile_view(request, name):
         "numFriends": numFriends,
         "follow_list": follow_list, 
         "profile_picture": profile_picture, 
-        "showButton": showButton
+        "areFriends": areFriends,
+        "pending": pending
     }
     return render(request,"profile.html", context=context)
 
@@ -514,10 +516,11 @@ def addFriend(request, name_to_follow, user_name):
         temp_friends_list = jsonDec.decode(current_profile.friends_list)
 
         temp_pending_list = []
+        temp_pending_list = jsonDec.decode(current_profile.pending_friends_list)
         #Add Pending Friend Request to user friend list
         if user_name not in temp_friends_list:
-            temp_pending_list = jsonDec.decode(current_profile.pending_friends_list)
-            temp_pending_list.append(str(user_name))
+            if user_name not in temp_pending_list:
+                temp_pending_list.append(str(user_name))
 
         current_profile.pending_friends_list = json.dumps(temp_pending_list)
 
@@ -599,7 +602,7 @@ def removeFriend(request, name_to_remove, user_name):
 
     #Get Current User
     if request.user.is_authenticated:
-        current_profile = models.UserModel.objects.get(username=user_name)
+        current_profile = models.UserModel.objects.get(username=name_to_remove)
         my_profile = models.UserModel.objects.get(username=user_name)
         jsonDec = json.decoder.JSONDecoder()
 
@@ -618,7 +621,7 @@ def removeFriend(request, name_to_remove, user_name):
         temp_friends_list = jsonDec.decode(my_profile.friends_list)
 
         #Remove Friend from your friends list
-        if user_name in temp_friends_list:
+        if name_to_remove in temp_friends_list:
             temp_friends_list.remove(str(name_to_remove))
         my_profile.friends_list = json.dumps(temp_friends_list)
 

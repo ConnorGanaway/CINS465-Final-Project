@@ -19,12 +19,10 @@
                   <p>Joined {{ request.user.date_joined }}</small></p>
                   
                   {% if request.user.username != profile_username %}
-                    {% if showButton == "True" %}
-                      <p><a href="/profile/{{ profile_username }}/add_friend/{{ request.user.username }}/">Add Friend</a></small></p>
-                    {% else %}
-                      {% if showButton == "True" %}
+                    {% if areFriends == "True" %}
                       <p><a href="/profile/{{ profile_username }}/remove_friend/{{ request.user.username }}/">Remove Friend</a></small></p>
-                      {% endif %}
+                    {% elif pending == "False" %}
+                    <p><a href="/profile/{{ profile_username }}/add_friend/{{ request.user.username }}/">Add Friend</a></small></p>
                     {% endif %}
                   {% endif %}
 

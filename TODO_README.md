@@ -6,6 +6,8 @@
   - How do I edit it so it uses a link with a <std:community_id> which
     changes in the link
 
+2. Add Delete Posts features
+
 2. Up Vote And Down vote feature
   - Find images without transparent background
   - Resize Images Correctly (Or find smaller images)
@@ -14,6 +16,4 @@
     - Use javascript so it doesn't have to reload the entire page
       - Once leaving it would update the vote attribute for the post
 
-
-post counter for profile
 
