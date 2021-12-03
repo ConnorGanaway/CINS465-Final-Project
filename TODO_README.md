@@ -8,6 +8,11 @@
 
 2. Add Delete Posts features
 
+3. redirct to follow link so the user who creates automatically follows
+
+4. Fix Profile page so communtiies drop down is for the logged in user
+   - (not for the current profile page)
+
 2. Up Vote And Down vote feature
   - Find images without transparent background
   - Resize Images Correctly (Or find smaller images)

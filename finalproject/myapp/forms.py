@@ -11,7 +11,19 @@ def must_be_unique(value):
     # Always return the cleaned data
     return value
 
-class ChangePictureForm(forms.Form):
+class UpdateAboutForm(forms.Form):
+    about = forms.CharField(
+        label="About",
+        required=False
+    )
+
+    def save(self, request, name):
+        user_instance = models.UserModel.objects.get(username=name)
+        user_instance.about = self.cleaned_data["about"]
+        user_instance.save()
+        return user_instance
+
+class UpdatePictureForm(forms.Form):
     profile_picture = forms.ImageField(
         label="Profile Picture",
         required=True
@@ -33,12 +45,13 @@ class CommunityForm(forms.Form):
         max_length=500,
     )
 
-    def save(self, request, name):
-        community_instance = models.CommunityModel(username=name)
+    def save(self, request):
+        community_instance = models.CommunityModel()
         community_instance.community = self.cleaned_data["community_field"]
         community_instance.about = self.cleaned_data["about_field"]
         community_instance.save()
         return community_instance
+
 
 
 class SuggestionForm(forms.Form):
@@ -114,21 +127,9 @@ class RegistrationForm(UserCreationForm):
     def saveUser(self, commit=True):
         user_instance = models.UserModel()
         user_instance.username = self.cleaned_data["username"]
-        user_instance.username = self.cleaned_data["first_name"]
-        user_instance.username = self.cleaned_data["last_name"]
+        user_instance.first_name = self.cleaned_data["first_name"]
+        user_instance.last_name = self.cleaned_data["last_name"]
         if commit:
             user_instance.save()
-        return user_instance
-
-class UserAboutForm(forms.Form):
-    about = forms.CharField(
-        label="About",
-        required=False
-    )
-
-    def save(self, request, name):
-        user_instance = models.UserModel.objects.get(username=name)
-        user_instance.profile_picture = self.cleaned_data["about"]
-        user_instance.save()
         return user_instance
 

@@ -11,12 +11,22 @@
 {% endblock %}
 {% block content %}
     <h3></h3>
-    <textarea id="chat-log" cols="100" rows="12"></textarea><br>
+    
+<textarea id="chat-log" cols="100" rows="12">
+{% for m in messages %}{{ m.username }}: {{ m.content }}
+{% endfor %}</textarea>
     <input id="chat-message-input" type="text" size="100">
     <input id="chat-message-submit" type="button" value="Send"><br>
     {{ room_name|json_script:"room-name" }}
+    {{ username|json_script:"username" }}
+    <h3></h3>
     <a class="button" href="{{request.META.HTTP_REFERER|escape}}">Back</a>
 {% endblock %}
 {% block scripts %}
 <script src="{% static 'js/chatroom.js' %}"></script>
 {% endblock %}
+
+<!--<textarea id="chat-log" cols="100" rows="12" style="max-height: 300px; overflow-y: scroll;">
+{% for m in messages %}
+{{ m.username }}: {{ m.content }}{% endfor %}
+</textarea><br>-->

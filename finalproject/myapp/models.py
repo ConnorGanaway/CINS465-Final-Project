@@ -66,3 +66,12 @@ class CommentModel(models.Model):
 
     def __str__(self):
         return str(self.author.username) + " " + str(self.comment)
+
+class MessageModel(models.Model):
+    username = models.CharField(max_length=255)
+    room = models.CharField(max_length=255)
+    content = models.TextField()
+    date_added = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ('-date_added',)

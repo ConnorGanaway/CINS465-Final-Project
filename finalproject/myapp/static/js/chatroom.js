@@ -1,4 +1,12 @@
+function scrollToBottom() {
+    let objDiv = document.getElementById("chat-log");
+    objDiv.scrollTop = objDiv.scrollHeight;
+}
+
+scrollToBottom();
+
 const roomName = JSON.parse(document.getElementById('room-name').textContent);
+const userName = JSON.parse(document.getElementById('username').textContent);
 
 const chatSocket = new WebSocket(
     'ws://'
@@ -10,7 +18,13 @@ const chatSocket = new WebSocket(
 
 chatSocket.onmessage = function(e) {
     const data = JSON.parse(e.data);
-    document.querySelector('#chat-log').value += (data.message + '\n');
+    if (data.message) {
+        document.querySelector('#chat-log').value += ('' + data.username + ': ' +data.message + '\n');
+    } else {
+        alert('The message was empty!')
+    }
+
+    scrollToBottom();
 };
 
 chatSocket.onclose = function(e) {
@@ -28,7 +42,10 @@ document.querySelector('#chat-message-submit').onclick = function(e) {
     const messageInputDom = document.querySelector('#chat-message-input');
     const message = messageInputDom.value;
     chatSocket.send(JSON.stringify({
-        'message': message
+        'message': message,
+        'username': userName,
+        'room': roomName
     }));
     messageInputDom.value = '';
 };
+

@@ -44,7 +44,8 @@
                 <ul class="menu">
                   {% if request.path != "/create_community/" %}
                   <li><a href="/profile/{{ request.user.username }}/">Profile</a></li>
-                  <li><a href="/profile/{{ request.user.username }}/change_picture/">Change Picture</a></li>
+                  <li><a href="/profile/{{ request.user.username }}/update_picture/">Update Picture</a></li>
+                  <li><a href="/profile/{{ request.user.username }}/update_about/">Update About</a></li>
                   <li><a href="/create_community/">Create Community</a><li>
                   <li><a href="/logout/">Logout</a></li>
                   {% endif %}
