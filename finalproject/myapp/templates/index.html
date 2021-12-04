@@ -7,49 +7,47 @@
 <link rel="stylesheet" href="{% static 'css/online-users.css' %}">
 {% endblock %}
 {% block content %}
-<div id="list-rendering">
-    <div class="grid-container">
-        <div class="grid-x grid-padding-x">
-            <div class="large-12 medium-12 small-12 cell">
-                {% if request.user.is_authenticated %}
-                <h3 style="color:black; padding-left: 100px;"> </h3>
-                <div class="holy-grail-grid">
+<div class="grid-container">
+    <div class="grid-x grid-padding-x">
+        <div class="large-12 medium-12 small-12 cell">
+            {% if request.user.is_authenticated %}
+            <h3 style="color:black; padding-left: 100px;"> </h3>
+            <div class="holy-grail-grid">
 
-                  <div class="holy-grail-left">
-                    <center><h3>Pending Friends List</h3></center>
-                    {% for person in pending_friends_list %}
-                      {{ person }}<br>
-                        <ul>
-                          <li><a href="profile/{{ person }}/accept_friend/{{ current_user }}/">Accept Request</a></li>
-                          <li><a href="profile/{{ person }}/decline_friend/{{ current_user }}/">Decline Request</a></li>
-                        </ul>
-                    {% endfor %}
-                  </div>
-
-                  <div class="holy-grail-middle">
-                    <center><h3>All Communities</h3></center>
-                    <ul style="color:black">
-                      {% for c in all_communities_list %}
-                        <a href="cur_community/{{ c }}/">{{ c }}</a><br>
-                      {% endfor %}
+              <div class="holy-grail-left">
+                <center><h3>Pending Friends List</h3></center>
+                {% for person in pending_friends_list %}
+                  {{ person }}<br>
+                    <ul>
+                      <li><a href="profile/{{ person }}/accept_friend/{{ current_user }}/">Accept Request</a></li>
+                      <li><a href="profile/{{ person }}/decline_friend/{{ current_user }}/">Decline Request</a></li>
                     </ul>
-                    </div>
+                {% endfor %}
+              </div>
 
-                  <div class="holy-grail-right">
-                    <center><h3>Friends List</h3></center>
-                    <ul style="color:black">
-                      {% for person in friends_list %}
-                        <a href="profile/{{ person }}/">{{ person }}</a><br>
-                      {% endfor %}
-                    </ul>
-                  </div>
+              <div class="holy-grail-middle">
+                <center><h3>All Communities</h3></center>
+                <ul style="color:black">
+                  {% for c in all_communities_list %}
+                    <a href="cur_community/{{ c }}/">{{ c }}</a><br>
+                  {% endfor %}
+                </ul>
                 </div>
-                {% else %}
-                <h3>
-                  <center>Please Login to view your Dashboard</center>
-                </h3>
-                {% endif %}
+
+              <div class="holy-grail-right">
+                <center><h3>Friends List</h3></center>
+                <ul style="color:black">
+                  {% for person in friends_list %}
+                    <a href="profile/{{ person }}/">{{ person }}</a><br>
+                  {% endfor %}
+                </ul>
+              </div>
             </div>
+            {% else %}
+            <h3>
+              <center>Please Login to view your Dashboard</center>
+            </h3>
+            {% endif %}
         </div>
     </div>
 </div>

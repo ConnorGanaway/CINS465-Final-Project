@@ -28,27 +28,27 @@
           <ul class="menu">
             <li><a href="/">Home</a></li>
             {% if request.user.is_authenticated %}
-            <ul class="dropdown menu" data-dropdown-menu id="primary-menu">
-              <li>
-                <a href="#">Communities</a>
-                <ul class="menu">
-                  {% for c in follow_list %}
-                    <a href="/cur_community/{{ c }}/">{{ c }}</a><br>
-                  {% endfor %}
-                </ul>
-              </li>
-            </ul>
+            {% if show_communities_tab == "True" %}
+              <ul class="dropdown menu" data-dropdown-menu id="primary-menu">
+                <li>
+                  <a href="#">Communities</a>
+                  <ul class="menu">
+                      {% for c in follow_list %}
+                        <a href="/cur_community/{{ c }}/">{{ c }}</a><br>
+                      {% endfor %}
+                  </ul>
+                </li>
+              </ul>
+            {% endif %}
             <ul class="dropdown menu" data-dropdown-menu id="primary-menu">
               <li>
                 <a href="#">{{ request.user.first_name }} {{ request.user.last_name }}</a>
                 <ul class="menu">
-                  {% if request.path != "/create_community/" %}
                   <li><a href="/profile/{{ request.user.username }}/">Profile</a></li>
                   <li><a href="/profile/{{ request.user.username }}/update_picture/">Update Picture</a></li>
                   <li><a href="/profile/{{ request.user.username }}/update_about/">Update About</a></li>
                   <li><a href="/create_community/">Create Community</a><li>
                   <li><a href="/logout/">Logout</a></li>
-                  {% endif %}
                 </ul>
               </li>
             </ul>

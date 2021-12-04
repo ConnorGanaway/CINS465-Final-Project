@@ -9,67 +9,66 @@
 <link rel="stylesheet" href="{% static 'css/loading.css' %}">
 {% endblock %}
 {% block content %}
-    <div id="list-rendering">
-        <div class="grid-container">
-            <div class="grid-x grid-padding-x">
-            <div class="large-12 medium-1 small-12 cell">
-                <h2>
-                <center>{{ community_id }}</center>
-                </h2>
-                <div class="card-info" style="position: absolute; right: 50px; top: 110px; width: 250px;">
-                    <div class="card-info-content">
-                        <center><a href="{{ request.path }}suggestion/">Add Suggestion</a></center>
-                        <center><a href="/community/{{ slugName }}/chat/">Real Time Chat</a></center>
-                        {% if request.user.is_authenticated %}
-                            {% if community_id not in current_user.followed_communities %}
-                            <center><a href="/community/{{ community_id }}/follow/">Follow</a></center>
-                            {% else %}
-                            <center><a href="/community/{{ community_id }}/unfollow/">Unfollow</a></center>
-                            {% endif %}
+<div id="list-rendering">
+    <div class="grid-container">
+        <div class="grid-x grid-padding-x">
+        <div class="large-12 medium-1 small-12 cell">
+            <h2>
+            <center>{{ community_id }}</center>
+            </h2>
+            <div class="card-info" style="position: absolute; right: 50px; top: 110px; width: 250px;">
+                <div class="card-info-content">
+                    <center><a href="{{ request.path }}suggestion/">Add Suggestion</a></center>
+                    <center><a href="/community/{{ slugName }}/chat/">Real Time Chat</a></center>
+                    {% if request.user.is_authenticated %}
+                        {% if community_id not in current_user.followed_communities %}
+                        <center><a href="/community/{{ community_id }}/follow/">Follow</a></center>
+                        {% else %}
+                        <center><a href="/community/{{ community_id }}/unfollow/">Unfollow</a></center>
                         {% endif %}
-                    </div>
+                    {% endif %}
                 </div>
-                <div class="card-info" style="position: absolute; right: 50px; top: 220px; width: 250px;">
+            </div>
+            <div class="card-info" style="position: absolute; right: 50px; top: 220px; width: 250px;">
+                <div class="card-info-content">
+                    <h3>About</h3>
+                    <p>{{ about }}</p>
+                </div>
+            </div>
+            <div class="large-12 medium-12 small-12 cell" v-for="sugg in suggestions">
+
+                {% verbatim %}
+                <div class="card-info">
                     <div class="card-info-content">
-                        <h3>About</h3>
-                        <p>{{ about }}</p>
-                    </div>
-                </div>
-                <div class="large-12 medium-12 small-12 cell" v-for="sugg in suggestions">
+                        <h3 class="lead"><a v-bind:href="'/profile/'+sugg.author+'/'">{{ sugg.author }}</a> - {{ sugg.date }}</h3>
+                        <img v-bind:src="sugg.image" v:alt="sugg.image_desc" /><br>
+                        <div id="counter">
+                        <a v-bind:href="'/cur_community/'+sugg.community+'/suggestion/'+sugg.id+'/upvote/'"><img src="../../static/images/upvote1.png" alt="Up Vote"/></a> <br>
+                        {{ sugg.vote }} - {{ sugg.suggestion }}<br>
+                        <a v-bind:href="'/cur_community/'+sugg.community+'/suggestion/'+sugg.id+'/downvote/'"><img src="../../static/images/downvote1.png" alt="Down Vote"/></a> <br>
+                        
+                        </div>
 
-                    {% verbatim %}
-                    <div class="card-info">
-                        <div class="card-info-content">
-                            <h3 class="lead"><a v-bind:href="'/profile/'+sugg.author+'/'">{{ sugg.author }}</a> - {{ sugg.date }}</h3>
-                            <img v-bind:src="sugg.image" v:alt="sugg.image_desc" /><br>
-                            <div id="counter">
-                            <a v-bind:href="'/cur_community/'+sugg.community+'/suggestion/'+sugg.id+'/upvote/'"><img src="../../static/images/upvote1.png" alt="Up Vote"/></a> <br>
-                            {{ sugg.vote }} - {{ sugg.suggestion }}<br>
-                            <a v-bind:href="'/cur_community/'+sugg.community+'/suggestion/'+sugg.id+'/downvote/'"><img src="../../static/images/downvote1.png" alt="Down Vote"/></a> <br>
-                            
-                            </div>
-
-                            <div class="grid-container">
-                                <div class="grid-x grid-padding-x">
-                                    <div class="large-11 medium-11 small-11 large-offset-1 medium-offset-1 small-offset-1 cell" v-for="comm in sugg.comments">
-                                        <div class="card-info" style="width:650px;">
-                                            <div class="card-info-content">
-                                                <h3 class="lead">{{ comm.comment }}</h3>
-                                                <a v-bind:href="'/profile/'+comm.author+'/'"></a>{{ comm.author }} - {{ comm.date }}
-                                            </div>
+                        <div class="grid-container">
+                            <div class="grid-x grid-padding-x">
+                                <div class="large-11 medium-11 small-11 large-offset-1 medium-offset-1 small-offset-1 cell" v-for="comm in sugg.comments">
+                                    <div class="card-info" style="width:650px;">
+                                        <div class="card-info-content">
+                                            <h3 class="lead">{{ comm.comment }}</h3>
+                                            <a v-bind:href="'/profile/'+comm.author+'/'"></a>{{ comm.author }} - {{ comm.date }}
                                         </div>
                                     </div>
-                                    <div class="large-11 medium-11 small-11 large-offset-1 medium-offset-1 small-offset-1 cell">
-                                        {% endverbatim %}
-                                        {% if request.user.is_authenticated %}
-                                            {% if request.user.username == sugg.author %}
-                                            <a class="button" v-bind:href="'/cur_community/'+sugg.community+'/delete/'">delete</a>
-                                            {% endif %}
-                                        <a class="button" v-bind:href="'/cur_community/'+sugg.community+'/comment/'+sugg.id+'/'">comment</a>
-
+                                </div>
+                                <div class="large-11 medium-11 small-11 large-offset-1 medium-offset-1 small-offset-1 cell">
+                                    {% endverbatim %}
+                                    {% if request.user.is_authenticated %}
+                                        {% if request.user.username == sugg.author %}
+                                        <a class="button" v-bind:href="'/cur_community/'+sugg.community+'/delete/'">delete</a>
                                         {% endif %}
-                                        <br>
-                                    </div>
+                                    <a class="button" v-bind:href="'/cur_community/'+sugg.community+'/comment/'+sugg.id+'/'">comment</a>
+
+                                    {% endif %}
+                                    <br>
                                 </div>
                             </div>
                         </div>
@@ -78,6 +77,7 @@
             </div>
         </div>
     </div>
+</div>
 <div class="loader-wrapper">
     <span class="loader"><span class="loader-inner"></span></span>
 </div>

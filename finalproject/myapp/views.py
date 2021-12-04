@@ -20,6 +20,7 @@ def index(request):
     pending_friends_list = []
     friends_list = []
     current_user = "Guest"
+    show_communities_tab = "True"
     
     if request.user.is_authenticated:
 
@@ -29,6 +30,8 @@ def index(request):
 
         jsonDec = json.decoder.JSONDecoder()
         follow_list = jsonDec.decode(current_user.followed_communities)
+        if len(follow_list) == 0:
+            show_communities_tab = "False"
         pending_friends_list = jsonDec.decode(current_user.pending_friends_list)
         friends_list = jsonDec.decode(current_user.friends_list)
 
@@ -38,6 +41,7 @@ def index(request):
         "all_communities_list": all_communities_list,
         "current_user": current_user,
         "follow_list": follow_list,
+        "show_communities_tab": show_communities_tab,
         "pending_friends_list": pending_friends_list,
         "friends_list": friends_list
     }
@@ -84,6 +88,7 @@ def community_view(request, community_id):
 
     cur_community = models.CommunityModel.objects.get(community=community_id)
     about = cur_community.about
+    show_communities_tab = "True"
 
     follow_list = []
     if request.user.is_authenticated:
@@ -92,6 +97,8 @@ def community_view(request, community_id):
 
         jsonDec = json.decoder.JSONDecoder()
         follow_list = jsonDec.decode(current_user.followed_communities)
+        if len(follow_list) == 0:
+            show_communities_tab = "False"
 
     showFollow = False
     current_user = None
@@ -113,6 +120,7 @@ def community_view(request, community_id):
         "slugName": newComm,
         "about": about,
         "follow_list": follow_list,
+        "show_communities_tab": show_communities_tab,
         "showFollow": showFollow,
         "current_user": current_user
     }
@@ -274,6 +282,10 @@ def suggestion_view(request, community_id):
 
     jsonDec = json.decoder.JSONDecoder()
     follow_list = jsonDec.decode(current_user.followed_communities)
+    show_communities_tab = "True"
+
+    if len(follow_list) == 0:
+        show_communities_tab = "False"
 
     if request.method == "POST":
         form = forms.SuggestionForm(request.POST, request.FILES)
@@ -290,7 +302,8 @@ def suggestion_view(request, community_id):
         "community_id": community_id,
         "form": form,
         "current_user": current_user,
-        "follow_list": follow_list
+        "follow_list": follow_list,
+        "show_communities_tab": show_communities_tab
     }
     return render(request,"suggestion.html", context=context)
 
@@ -303,6 +316,10 @@ def comment_view(request, community_id, sugg_id):
 
     jsonDec = json.decoder.JSONDecoder()
     follow_list = jsonDec.decode(current_user.followed_communities)
+
+    show_communities_tab = "True"
+    if len(follow_list) == 0:
+        show_communities_tab = "False"
 
     if request.method == "POST":
         form = forms.CommentForm(request.POST)
@@ -317,6 +334,7 @@ def comment_view(request, community_id, sugg_id):
         "title": "Comment",
         "community_id": community_id,
         "follow_list": follow_list,
+        "show_communities_tab": show_communities_tab,
         "sugg_id": sugg_id,
         "form": form
     }
@@ -331,6 +349,10 @@ def create_community_view(request):
 
     jsonDec = json.decoder.JSONDecoder()
     follow_list = jsonDec.decode(current_user.followed_communities)
+
+    show_communities_tab = "True"
+    if len(follow_list) == 0:
+        show_communities_tab = "False"
 
     if request.method == "POST":
         form = forms.CommunityForm(request.POST)
@@ -361,6 +383,7 @@ def create_community_view(request):
     context = {
         "title": "Create Communtiy",
         "follow_list": follow_list,
+        "show_communities_tab": show_communities_tab,
         "form": form
     }
     return render(request,"create_community.html", context=context)
@@ -436,6 +459,7 @@ def profile_view(request, name):
     friends_list = jsonDec.decode(current_profile.friends_list)
 
     numFriends = len(friends_list)
+    show_communities_tab = "True"
 
     if request.user.is_authenticated:
 
@@ -445,6 +469,8 @@ def profile_view(request, name):
         follow_list = jsonDec.decode(my_profile.followed_communities)
 
         numFollowed = len(follow_list)
+        if numFollowed == 0:
+            show_communities_tab = "False"
 
         if request.user.username in current_profile.friends_list:
             areFriends = "True"
@@ -462,7 +488,8 @@ def profile_view(request, name):
         "numFollowed": numFollowed,
         "voteScore": voteScore,
         "numFriends": numFriends,
-        "follow_list": follow_list, 
+        "follow_list": follow_list,
+        "show_communities_tab": show_communities_tab,
         "profile_picture": profile_picture, 
         "areFriends": areFriends,
         "pending": pending
@@ -487,11 +514,16 @@ def update_profile_picture_view(request, name):
     else:
         form = forms.UpdatePictureForm()
 
+    show_communities_tab = "True"
+    if len(follow_list) == 0:
+        show_communities_tab = "False"
+
     context = {
         "title": "Update Picture",
         "name": name,
         "current_user": current_user,
         "follow_list": follow_list,
+        "show_communities_tab": show_communities_tab,
         "form": form
     }
     return render(request,"profile/update_picture.html", context=context)
@@ -514,11 +546,16 @@ def update_profile_about_view(request, name):
     else:
         form = forms.UpdateAboutForm()
 
+    show_communities_tab = "True"
+    if len(follow_list) == 0:
+        show_communities_tab = "False"
+
     context = {
         "title": "Update About",
         "name": name,
         "current_user": current_user,
         "follow_list": follow_list,
+        "show_communities_tab": show_communities_tab,
         "form": form
     }
     return render(request,"profile/update_about.html", context=context)
@@ -538,6 +575,8 @@ def room(request, room_name):
 
     cur_community = models.CommunityModel.objects.get(community=temp_room_name)
     room_name_back = str(cur_community.community).replace("_", " ")
+
+    show_communities_tab = "True"
     if request.user.is_authenticated:
         follow_list = []
         name = request.user.username
@@ -546,11 +585,15 @@ def room(request, room_name):
         jsonDec = json.decoder.JSONDecoder()
         follow_list = jsonDec.decode(current_user.followed_communities)
 
+        if len(follow_list) == 0:
+            show_communities_tab = "False"
+
     context = {
         "room_name": room_name,
         "username": username,
         'messages': messages,
         "follow_list": follow_list,
+        "show_communities_tab": show_communities_tab,
         "room_name_back": room_name_back
     }
 
