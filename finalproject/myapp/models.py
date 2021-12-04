@@ -75,3 +75,6 @@ class MessageModel(models.Model):
 
     class Meta:
         ordering = ('-date_added',)
+
+    def __str__(self):
+        return str(self.username) + " - " + str(self.room) + " - " + str(self.content)

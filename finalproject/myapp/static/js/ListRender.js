@@ -7,10 +7,10 @@ const ListRendering = {
     mounted() {
         //get request
         //use results
-        axios.get('/suggestions/')
+        axios.get("/current_community.json")
             .then(function (response) {
                 // handle success
-                myapp.cur_community = response.data.suggestions;
+                myapp.suggestions = response.data.suggestions;
                 console.log(response);
             })
             .catch(function (error) {
@@ -18,7 +18,7 @@ const ListRendering = {
                 console.log(error);
             })
         setInterval(()=>{
-            axios.get('/suggestions/')
+            axios.get("/current_community.json")
             .then(function (response) {
                 // handle success
                 myapp.suggestions = response.data.suggestions;

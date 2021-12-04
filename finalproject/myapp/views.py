@@ -87,7 +87,6 @@ def community_view(request, community_id):
         name = request.user.username
         current_user = models.UserModel.objects.get(username=name)
 
-        #models.UserModel.objects.all(followed_communities)
         jsonDec = json.decoder.JSONDecoder()
         follow_list = jsonDec.decode(current_user.followed_communities)
 
@@ -106,7 +105,6 @@ def community_view(request, community_id):
         if str(community_id) not in temp_list:
             showFollow = True
 
-    #slugName = slugify(str(cur_community.community))
     comm = str(cur_community.community).replace(" ", "")
 
     context = {
@@ -117,6 +115,7 @@ def community_view(request, community_id):
         "showFollow": showFollow,
         "current_user": current_user
     }
+
     return render(request,"community.html", context=context)
 
 def follow(request, community_id):
@@ -218,9 +217,9 @@ def cur_community_view(request, community_id):
         comment_objects = models.CommentModel.objects.filter(suggestion=sugg)
         temp_sugg = {}
         temp_sugg["suggestion"] = sugg.suggestion
-        #community_object = models.CommunityModel.object.filter()
         temp_sugg["community"] = sugg.community.community
         temp_sugg["id"] = sugg.id
+        temp_sugg["vote"] = sugg.vote
         temp_sugg["author"] = sugg.author.username
         temp_sugg["date"] = sugg.published_on.strftime("%Y-%m-%d")
         if sugg.image:
@@ -252,9 +251,14 @@ def cur_community_view(request, community_id):
             temp_sugg["comments"] += [temp_comm]
         suggestion_list["suggestions"] += [temp_sugg]
 
-    redirect("/login/")
+    #current_community_json_file = str(community_id) + ".json"
 
-    return JsonResponse(suggestion_list)
+    with open("current_community.json", 'w') as jsonfile:
+        json.dump(suggestion_list, jsonfile)
+
+    link = "/community/" + str(community_id) + "/"
+    return redirect(str(link))
+    #return JsonResponse(suggestion_list)
 
 def suggestion_view(request, community_id):
     if not request.user.is_authenticated:
@@ -264,7 +268,6 @@ def suggestion_view(request, community_id):
     name = request.user.username
     current_user = models.UserModel.objects.get(username=name)
 
-    #models.UserModel.objects.all(followed_communities)
     jsonDec = json.decoder.JSONDecoder()
     follow_list = jsonDec.decode(current_user.followed_communities)
 
@@ -273,7 +276,7 @@ def suggestion_view(request, community_id):
         if form.is_valid() and request.user.is_authenticated:
             form.save(request, community_id)
             current_user.numPosts += 1
-            link = "/community/" + str(community_id) + "/"
+            link = "/cur_community/" + str(community_id) + "/"
             return redirect(str(link))
     else:
         form = forms.SuggestionForm()
@@ -294,7 +297,6 @@ def comment_view(request, community_id, sugg_id):
     name = request.user.username
     current_user = models.UserModel.objects.get(username=name)
 
-    #models.UserModel.objects.all(followed_communities)
     jsonDec = json.decoder.JSONDecoder()
     follow_list = jsonDec.decode(current_user.followed_communities)
 
@@ -302,7 +304,7 @@ def comment_view(request, community_id, sugg_id):
         form = forms.CommentForm(request.POST)
         if form.is_valid() and request.user.is_authenticated:
             form.save(request, community_id, sugg_id)
-            link = "/community/" + str(community_id) + "/"
+            link = "/cur_community/" + str(community_id) + "/"
             return redirect(str(link))
     else:
         form = forms.CommentForm()
@@ -323,7 +325,6 @@ def create_community_view(request):
     name = request.user.username
     current_user = models.UserModel.objects.get(username=name)
 
-    #models.UserModel.objects.all(followed_communities)
     jsonDec = json.decoder.JSONDecoder()
     follow_list = jsonDec.decode(current_user.followed_communities)
 
@@ -331,11 +332,27 @@ def create_community_view(request):
         form = forms.CommunityForm(request.POST)
         if form.is_valid() and request.user.is_authenticated:
             form.save(request)
+
+            data = form.cleaned_data
+            community_id = data['community_field']
+
+            #Get the Follow List from the Current User
+            jsonDec = json.decoder.JSONDecoder()
+            temp_list = jsonDec.decode(current_user.followed_communities)
+
+            #Add Current Community to user follow list once it is created
+            if community_id not in temp_list:
+                temp_list.append(str(community_id))
+            current_user.followed_communities = json.dumps(temp_list)
+
+            #Save the changes
+            current_user.save()
+
+
             return redirect("/")
     else:
         form = forms.CommunityForm()
 
-    print("FORM CREATED")
 
     context = {
         "title": "Create Communtiy",
@@ -353,7 +370,6 @@ def suggestions_view(request):
         comment_objects = models.CommentModel.objects.filter(suggestion=sugg)
         temp_sugg = {}
         temp_sugg["suggestion"] = sugg.suggestion
-        #community_object = models.CommunityModel.object.filter()
         temp_sugg["community"] = sugg.community.community
         temp_sugg["id"] = sugg.id
         temp_sugg["vote"] = sugg.vote
@@ -403,7 +419,6 @@ def profile_view(request, name):
 
     voteScore = sum(voteSum)
 
-    # = request.user.username
     current_profile = models.UserModel.objects.get(username=name)
     first_name = current_profile.first_name
     last_name = current_profile.last_name
@@ -456,7 +471,6 @@ def update_profile_picture_view(request, name):
     follow_list = []
     current_user = models.UserModel.objects.get(username=name)
 
-    #models.UserModel.objects.all(followed_communities)
     jsonDec = json.decoder.JSONDecoder()
     follow_list = jsonDec.decode(current_user.followed_communities)
 
@@ -484,7 +498,6 @@ def update_profile_about_view(request, name):
     follow_list = []
     current_user = models.UserModel.objects.get(username=name)
 
-    #models.UserModel.objects.all(followed_communities)
     jsonDec = json.decoder.JSONDecoder()
     follow_list = jsonDec.decode(current_user.followed_communities)
 
@@ -521,7 +534,6 @@ def room(request, room_name):
         name = request.user.username
         current_user = models.UserModel.objects.get(username=name)
 
-        #models.UserModel.objects.all(followed_communities)
         jsonDec = json.decoder.JSONDecoder()
         follow_list = jsonDec.decode(current_user.followed_communities)
 

@@ -1,17 +1,6 @@
 # Next thing to work on in project:
 
-1. Make posts only appear for the community they are tied too
-  - I need to find the list rendering function in vue.js, so it pulls
-    from the cur_community json page.
-  - How do I edit it so it uses a link with a <std:community_id> which
-    changes in the link
-
-2. Add Delete Posts features
-
-3. redirct to follow link so the user who creates automatically follows
-
-4. Fix Profile page so communtiies drop down is for the logged in user
-   - (not for the current profile page)
+1. Add Delete Posts features (Not gonna worry to much)
 
 2. Up Vote And Down vote feature
   - Find images without transparent background

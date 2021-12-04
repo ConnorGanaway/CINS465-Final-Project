@@ -52,6 +52,9 @@ class CommunityForm(forms.Form):
         community_instance.save()
         return community_instance
 
+    def getCommunityName(self, request):
+        return self.cleaned_data["community_field"]
+
 
 
 class SuggestionForm(forms.Form):
