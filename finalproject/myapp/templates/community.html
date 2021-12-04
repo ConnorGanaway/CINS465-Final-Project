@@ -20,10 +20,12 @@
                     <div class="card-info-content">
                         <center><a href="{{ request.path }}suggestion/">Add Suggestion</a></center>
                         <center><a href="/community/{{ slugName }}/chat/">Real Time Chat</a></center>
-                        {% if community_id not in current_user.followed_communities %}
-                        <center><a href="/community/{{ community_id }}/follow/">Follow</a></center>
-                        {% else %}
-                        <center><a href="/community/{{ community_id }}/unfollow/">Unfollow</a></center>
+                        {% if request.user.is_authenticated %}
+                            {% if community_id not in current_user.followed_communities %}
+                            <center><a href="/community/{{ community_id }}/follow/">Follow</a></center>
+                            {% else %}
+                            <center><a href="/community/{{ community_id }}/unfollow/">Unfollow</a></center>
+                            {% endif %}
                         {% endif %}
                     </div>
                 </div>

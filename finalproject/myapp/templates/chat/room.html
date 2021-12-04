@@ -20,7 +20,7 @@
     {{ room_name|json_script:"room-name" }}
     {{ username|json_script:"username" }}
     <h3></h3>
-    <a class="button" href="{{request.META.HTTP_REFERER|escape}}">Back</a>
+    <a class="button" href="/cur_community/{{room_name_back|escape}}/">Back</a>
 {% endblock %}
 {% block scripts %}
 <script src="{% static 'js/chatroom.js' %}"></script>

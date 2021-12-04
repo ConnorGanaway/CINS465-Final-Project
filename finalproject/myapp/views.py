@@ -82,6 +82,9 @@ def community_view(request, community_id):
     if request.method == "POST":
         return redirect("/")
 
+    cur_community = models.CommunityModel.objects.get(community=community_id)
+    about = cur_community.about
+
     follow_list = []
     if request.user.is_authenticated:
         name = request.user.username
@@ -93,10 +96,8 @@ def community_view(request, community_id):
     showFollow = False
     current_user = None
     if request.user.is_authenticated:
-        cur_community = models.CommunityModel.objects.get(community=community_id)
         name = request.user.username
         current_user = models.UserModel.objects.get(username=name)
-        about = cur_community.about
 
         jsonDec = json.decoder.JSONDecoder()
         temp_list = []
@@ -105,11 +106,11 @@ def community_view(request, community_id):
         if str(community_id) not in temp_list:
             showFollow = True
 
-    comm = str(cur_community.community).replace(" ", "")
+    newComm = str(cur_community.community).replace(" ", "_")
 
     context = {
         "community_id": community_id,
-        "slugName": comm,
+        "slugName": newComm,
         "about": about,
         "follow_list": follow_list,
         "showFollow": showFollow,
@@ -118,6 +119,7 @@ def community_view(request, community_id):
 
     return render(request,"community.html", context=context)
 
+@login_required
 def follow(request, community_id):
     if request.method == "POST":
         return redirect("/")
@@ -144,6 +146,7 @@ def follow(request, community_id):
 
     return redirect(str(link))
 
+@login_required
 def unfollow(request, community_id):
     if request.method == "POST":
         return redirect("/")
@@ -260,6 +263,7 @@ def cur_community_view(request, community_id):
     return redirect(str(link))
     #return JsonResponse(suggestion_list)
 
+@login_required
 def suggestion_view(request, community_id):
     if not request.user.is_authenticated:
         return redirect("/login/")
@@ -525,10 +529,15 @@ def page_not_found_view(request, exception):
 def chatIndex(request):
     return render(request, 'chat/chatIndex.html')
 
+@login_required
 def room(request, room_name):
 
     username = request.user.username
     messages = models.MessageModel.objects.filter(room=room_name)[0:25:-1]
+    temp_room_name = str(room_name).replace("_", " ")
+
+    cur_community = models.CommunityModel.objects.get(community=temp_room_name)
+    room_name_back = str(cur_community.community).replace("_", " ")
     if request.user.is_authenticated:
         follow_list = []
         name = request.user.username
@@ -542,6 +551,7 @@ def room(request, room_name):
         "username": username,
         'messages': messages,
         "follow_list": follow_list,
+        "room_name_back": room_name_back
     }
 
     return render(request, 'chat/room.html', context=context)
