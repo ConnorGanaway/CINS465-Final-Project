@@ -74,7 +74,7 @@ def register_view(request):
             return redirect("/login/")
     else:
         form = forms.RegistrationForm()
-        aboutForm = forms.UserAboutForm()
+       #aboutForm = forms.UserAboutForm()
 
     context = {
         "title": "Registration Page",
