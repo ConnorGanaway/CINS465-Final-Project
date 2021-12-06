@@ -129,4 +129,5 @@ dmypy.json
 .pyre/
 
 #Current Community Json
+media/
 current_community.json
