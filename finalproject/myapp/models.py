@@ -16,6 +16,7 @@ class UserModel(models.Model):
     followed_communities = models.TextField(default="[]")
     pending_friends_list = models.TextField(default="[]")
     friends_list = models.TextField(default="[]")
+    pending_mod_invites = models.TextField(default="[]")
     numPosts = models.IntegerField(default=0)
     about = models.CharField(
         max_length=500, 
@@ -33,6 +34,9 @@ class CommunityModel(models.Model):
         default="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
         max_length=500
     )
+    mod_list = models.TextField(default="[]")
+    ban_list = models.TextField(default="[]")
+    published_on = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return str(self.community)

@@ -17,19 +17,28 @@
               <div class="holy-grail-left">
                 <center><h3>Pending Friends List</h3></center>
                 {% for person in pending_friends_list %}
-                  {{ person }}<br>
+                  User: {{ person }}<br>
                     <ul>
                       <li><a href="profile/{{ person }}/accept_friend/{{ current_user }}/">Accept Request</a></li>
                       <li><a href="profile/{{ person }}/decline_friend/{{ current_user }}/">Decline Request</a></li>
                     </ul>
                 {% endfor %}
+                {% for community in invite_list %}
+                    Community: {{ community }}<br>
+                    <ul>
+                      <li><a href="community/{{ community }}/accept_mod_invite/{{ current_user }}/">Accept Request</a></li>
+                      <li><a href="community/{{ community }}/decline_mod_invite/{{ current_user }}/">Decline Request</a></li>
+                    </ul>
+                {% endfor%}
               </div>
 
               <div class="holy-grail-middle">
                 <center><h3>All Communities</h3></center>
                 <ul style="color:black">
                   {% for c in all_communities_list %}
+                    {% if request.user.username not in c.ban_list %}
                     <a href="cur_community/{{ c }}/">{{ c }}</a><br>
+                    {% endif %}
                   {% endfor %}
                 </ul>
                 </div>

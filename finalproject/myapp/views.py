@@ -34,6 +34,7 @@ def index(request):
             show_communities_tab = "False"
         pending_friends_list = jsonDec.decode(current_user.pending_friends_list)
         friends_list = jsonDec.decode(current_user.friends_list)
+        invite_list = jsonDec.decode(current_user.pending_mod_invites)
 
     context = {
         "title": "Final Project",
@@ -43,7 +44,8 @@ def index(request):
         "follow_list": follow_list,
         "show_communities_tab": show_communities_tab,
         "pending_friends_list": pending_friends_list,
-        "friends_list": friends_list
+        "friends_list": friends_list,
+        "invite_list": invite_list
     }
     return render(request,"index.html", context=context)
 
@@ -89,6 +91,7 @@ def community_view(request, community_id):
     cur_community = models.CommunityModel.objects.get(community=community_id)
     about = cur_community.about
     show_communities_tab = "True"
+    isMod = "False"
 
     follow_list = []
     if request.user.is_authenticated:
@@ -96,6 +99,11 @@ def community_view(request, community_id):
         current_user = models.UserModel.objects.get(username=name)
 
         jsonDec = json.decoder.JSONDecoder()
+
+        temp_ban_list = jsonDec.decode(cur_community.ban_list)
+        if name in temp_ban_list:
+            return redirect("/")
+
         follow_list = jsonDec.decode(current_user.followed_communities)
         if len(follow_list) == 0:
             show_communities_tab = "False"
@@ -113,6 +121,11 @@ def community_view(request, community_id):
         if str(community_id) not in temp_list:
             showFollow = True
 
+        mod_list = []
+        mod_list = jsonDec.decode(cur_community.mod_list)
+        if str(name) in mod_list:
+            isMod = "True"
+
     newComm = str(cur_community.community).replace(" ", "_")
 
     context = {
@@ -122,7 +135,8 @@ def community_view(request, community_id):
         "follow_list": follow_list,
         "show_communities_tab": show_communities_tab,
         "showFollow": showFollow,
-        "current_user": current_user
+        "current_user": current_user,
+        "isMod": isMod
     }
 
     return render(request,"community.html", context=context)
@@ -357,7 +371,7 @@ def create_community_view(request):
     if request.method == "POST":
         form = forms.CommunityForm(request.POST)
         if form.is_valid() and request.user.is_authenticated:
-            form.save(request)
+            form.save(request, name)
 
             data = form.cleaned_data
             community_id = data['community_field']
@@ -373,6 +387,16 @@ def create_community_view(request):
 
             #Save the changes
             current_user.save()
+
+            #Add the User who creates to the mod list on the Community
+            current_community = models.CommunityModel.objects.get(community=community_id)
+            temp_list = jsonDec.decode(current_community.mod_list)
+            if name not in temp_list:
+                temp_list.append(str(name))
+            current_community.mod_list = json.dumps(temp_list)
+
+            #Save the changes
+            current_community.save()
 
 
             return redirect("/")
@@ -726,3 +750,155 @@ def removeFriend(request, name_to_remove, user_name):
     link = "/profile/" + str(name_to_remove) + "/"
 
     return redirect(str(link))
+
+@login_required
+def mod_tools_views(request, community_id):
+
+    temp_mod_list = []
+    follow_list = []
+
+    jsonDec = json.decoder.JSONDecoder()
+
+    name = request.user.username
+    current_user = models.UserModel.objects.get(username=name)
+    cur_community = models.CommunityModel.objects.get(community=community_id)
+    temp_mod_list = jsonDec.decode(cur_community.mod_list)
+
+    
+    follow_list = jsonDec.decode(current_user.followed_communities)
+
+    show_communities_tab = "True"
+    if len(follow_list) == 0:
+        show_communities_tab = "False"
+
+    if request.method == "POST":
+        if str(name) not in temp_mod_list:
+            redirect("/")
+
+        invite_form = forms.InviteNewModForm(request.POST or None)
+        if invite_form.is_valid() and request.user.is_authenticated:
+            new_mod = invite_form.cleaned_data["new_mod"]
+
+            if invite_form.notEmpty(new_mod):
+
+                user_instance = models.UserModel.objects.get(username=new_mod)
+
+                temp_list = jsonDec.decode(user_instance.pending_mod_invites)
+                if community_id not in temp_list:
+                    temp_list.append(str(community_id))
+                user_instance.pending_mod_invites = json.dumps(temp_list)
+
+                user_instance.save()
+                invite_form = forms.InviteNewModForm()
+
+        ban_form = forms.BanUserForm(request.POST or None)
+        if ban_form.is_valid() and request.user.is_authenticated:
+            banned_user = ban_form.cleaned_data["banned_user"]
+
+            if ban_form.notEmpty(banned_user):
+
+                community_instance = models.CommunityModel.objects.get(community=community_id)
+
+                temp_list = jsonDec.decode(community_instance.ban_list)
+                if banned_user not in temp_list:
+                    temp_list.append(str(banned_user))
+                community_instance.ban_list = json.dumps(temp_list)
+
+                community_instance.save()
+                ban_form = forms.BanUserForm()
+
+        about_form = forms.UpdateCommunityAboutForm(request.POST)
+        if about_form.is_valid() and request.user.is_authenticated:
+            about_form.save(request, community_id)
+            about_form = forms.UpdateAboutForm()
+
+    else:
+        invite_form = forms.InviteNewModForm()
+        ban_form = forms.BanUserForm()
+        about_form = forms.UpdateAboutForm()
+
+    mod_list = jsonDec.decode(cur_community.mod_list)
+
+    suggestion_objects = models.SuggestionModel.objects.filter(community=cur_community).order_by("-published_on")
+    numPosts = len(suggestion_objects)
+    dateCreated = cur_community.published_on.strftime("%Y-%m-%d")
+
+    context = {
+        "title": "Moderator Tools",
+        "name": name,
+        "community_id": community_id,
+        "current_user": current_user,
+        "follow_list": follow_list,
+        "show_communities_tab": show_communities_tab,
+        "invite_form": invite_form,
+        "ban_form": ban_form,
+        "mod_list": mod_list,
+        "about_form": about_form,
+        "numPosts": numPosts,
+        "dateCreated": dateCreated
+    }
+    return render(request,"mod_tools.html", context=context)
+
+def acceptModRequest(request, community_id, user_name):
+    if request.method == "POST":
+        return redirect("/")
+
+    current_community = models.CommunityModel.objects.get(community=community_id)
+
+    temp_invite_list = []
+    temp_mod_list = []
+
+    #Get CurrentUser
+    if request.user.is_authenticated :
+        current_profile = models.UserModel.objects.get(username=user_name)
+
+        #Get the Pending Invite List from the Current User
+        jsonDec = json.decoder.JSONDecoder()
+        temp_invite_list = jsonDec.decode(current_profile.pending_mod_invites)
+
+        #User Accepting the Mod Invite
+        if community_id in temp_invite_list:
+            temp_invite_list.remove(str(community_id))
+
+        current_profile.pending_mod_invites = json.dumps(temp_invite_list)
+
+        #Save the changes
+        current_profile.save()
+
+        #Community mod list is updated
+        temp_mod_list = jsonDec.decode(current_community.mod_list)
+        if user_name not in temp_mod_list:
+            temp_mod_list.append(str(user_name))
+
+        current_community.mod_list = json.dumps(temp_mod_list)
+
+        #Save the changes
+        current_community.save()
+    
+    link = "/community/" + str(community_id) + "/"
+    return redirect(str(link))
+
+def declineModRequest(request, community_id, user_name):
+    if request.method == "POST":
+        return redirect("/")
+
+    temp_invite_list = []
+
+    #Get CurrentUser
+    if request.user.is_authenticated:
+        current_profile = models.UserModel.objects.get(username=user_name)
+
+        #Get the Pending Invite List from the Current User
+        jsonDec = json.decoder.JSONDecoder()
+        temp_invite_list = jsonDec.decode(current_profile.pending_mod_invites)
+
+        #User Declining the Mod Invite
+        if community_id in temp_invite_list:
+            temp_invite_list.remove(str(community_id))
+
+        current_profile.pending_mod_invites = json.dumps(temp_invite_list)
+
+        #Save the changes
+        current_profile.save()
+    
+    return redirect("/")

@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User as auth_user
+import json
 
 from . import models
 
@@ -10,6 +11,54 @@ def must_be_unique(value):
         raise forms.ValidationError("Email already exists")
     # Always return the cleaned data
     return value
+
+def must_exist(value):
+    if models.UserModel.objects.filter(username=value).exists() == False:
+        raise forms.ValidationError("Username does not exist")
+    return value
+
+def notEmpty(value):
+    if value == "":
+        raise forms.ValidationError("Username is required")
+    return value
+
+class UpdateCommunityAboutForm(forms.Form):
+    about = forms.CharField(
+        label="About",
+        required=False
+    )
+
+    def save(self, request, community_id):
+        community_instance = models.CommunityModel.objects.get(community=community_id)
+        community_instance.about = self.cleaned_data["about"]
+        community_instance.save()
+        return community_instance
+
+class BanUserForm(forms.Form):
+    banned_user = forms.CharField(
+        label="Ban Current User",
+        required=False,
+        validators=[must_exist, notEmpty]
+    )
+
+    def notEmpty(request, banned_user):
+        if banned_user == "":
+            return False
+        return True
+
+
+class InviteNewModForm(forms.Form):
+    new_mod = forms.CharField(
+        label="Invite New Moderator",
+        required=False,
+        validators=[must_exist, notEmpty]
+    )
+
+    def notEmpty(request, new_mod):
+        if new_mod == "":
+            return False
+        return True
+
 
 class UpdateAboutForm(forms.Form):
     about = forms.CharField(
@@ -45,12 +94,20 @@ class CommunityForm(forms.Form):
         max_length=500,
     )
 
-    def save(self, request):
+    def save(self, request, name):
         community_instance = models.CommunityModel()
         community_instance.community = self.cleaned_data["community_field"]
         community_instance.about = self.cleaned_data["about_field"]
+
+        jsonDec = json.decoder.JSONDecoder()
+        temp_list = jsonDec.decode(community_instance.mod_list)
+        if name not in temp_list:
+            temp_list.append(str(name))
+        community_instance.mod_list = json.dumps(temp_list)
+
         community_instance.save()
         return community_instance
+
 
     def getCommunityName(self, request):
         return self.cleaned_data["community_field"]

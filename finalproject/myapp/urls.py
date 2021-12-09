@@ -28,4 +28,7 @@ urlpatterns = [
     path('profile/<str:user_name_to_add>/accept_friend/<str:user_name>/', views.acceptFriendRequest),
     path('profile/<str:user_name_to_decline>/decline_friend/<str:user_name>/', views.declineFriendRequest),
     path('community/<str:room_name>/chat/', views.room, name='room'),
+    path('community/<str:community_id>/mod_tools/', views.mod_tools_views),
+    path('community/<str:community_id>/accept_mod_invite/<str:user_name>/', views.acceptModRequest),
+    path('community/<str:community_id>/decline_mod_invite/<str:user_name>/', views.declineModRequest),
 ]

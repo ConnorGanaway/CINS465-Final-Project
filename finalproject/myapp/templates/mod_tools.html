@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/posts.css' %}">
+<link rel="stylesheet" href="{% static 'css/online-users.css' %}">
+{% endblock %}
+{% block content %}
+<div class="grid-container">
+    <div class="grid-x grid-padding-x">
+        <div class="large-12 medium-12 small-12 cell">
+            {% if request.user.is_authenticated %}
+            <h3 style="color:black; padding-left: 100px;"> </h3>
+            <div class="holy-grail-grid">
+
+              <div class="holy-grail-left">
+                <center><h3>Statistics</h3></center>
+                <ul>
+                    <li>Date Created: <br>{{ dateCreated }}</li>
+                    <li>Number of Posts: {{ numPosts }}</li>
+                </ul>
+              </div>
+
+              <div class="holy-grail-middle">
+                <center><h3>Moderator Tools</h3></center>
+                <ul style="color:black">
+                    <form action="/community/{{ community_id }}/mod_tools/" method="post">
+                        {% csrf_token %}
+                        <li>{{ invite_form }}</li> 
+                        <input type="submit" class="button expanded" value="Invite" />
+                    </form>
+
+                    <form action="/community/{{ community_id }}/mod_tools/" method="post">
+                        {% csrf_token %}
+                        <li>{{ ban_form }}</li> 
+                        <input type="submit" class="button expanded" value="Ban" />
+                    </form>
+
+                    <form action="/community/{{ community_id }}/mod_tools/" method="post">
+                        {% csrf_token %}
+                        <li>{{ about_form }}</li> 
+                        <input type="submit" class="button expanded" value="Update About" />
+                    </form>
+                </ul>
+              </div>
+
+              <div class="holy-grail-right">
+                <center><h3>Moderators</h3></center>
+                <ul style="color:black">
+                  {% for mod in mod_list %}
+                    <a href="profile/{{ mod }}/">{{ mod }}</a><br>
+                  {% endfor %}
+                </ul>
+                </div>
+            </div>
+            {% else %}
+            <h3>
+              <center>Please Login to view your Dashboard</center>
+            </h3>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://unpkg.com/vue@next"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="{% static 'js/ListRender.js' %}"></script>
+{% endblock %}

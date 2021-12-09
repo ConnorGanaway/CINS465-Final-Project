@@ -1,18 +1,18 @@
-# Next thing to work on in project:
+# Project Todo list:
 
 1. Moderation Features
-   - When a person creates a community they are added to the moderation json list
-     - this is a list attribute for the community
    - Mods can update the about section (Community Profile Image if implemented?)
      - This will be in the top left for the nav bar in the menu
    - Delete any posts within the community
-   - Invite Other users to become Moderators
-   - Moderators will be listed on one of the side panels
    - Can timeout users
      - Do I use a dropdown bar or just input box with validation?
    - Can Ban users
      - When a user tries to access the page they are shown a "You are banned, can't
        access" message
+   - Can also delete the community
+   - Need to check when performing a moderation tool that the user is a
+     a moderator (to prevent just any user from trying to use them by typing
+     in the link)
 
 2. Community Profile Image
    - add field to database
@@ -24,7 +24,7 @@
 
 3. Users can Delete their own posts(Not gonna worry to much)
 
-4. Up Vote And Down vote feature bug
+4. Up Vote And Down vote feature bug:
   - Current Number on screen doesn't refresh until cur_community json page is called
 
 
